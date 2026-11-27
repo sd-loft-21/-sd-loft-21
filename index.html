@@ -336,7 +336,7 @@
         (state.techHour ? "Тех. час: включён\n" : "") +
         (state.promoOk ? "Промокод ЁЛКА (−10%): −" + fmt(c.disc) + " ₽\n" : "") +
         "Итого аренда: " + fmt(c.total) + " ₽\n" +
-        "Предоплата брони: 3 000 ₽ (возвратный залог при заезде: 3 000 ₽)\n" +
+        "Предоплата после подтверждения: 3 000 ₽ (возвратный залог при заезде: 3 000 ₽)\n" +
         (state.name ? "Имя: " + state.name + "\n" : "") +
         (state.phone ? "Телефон: " + state.phone : "")
       );
@@ -536,7 +536,7 @@
 
               <div style="background:var(--bg-iron);border:1px solid var(--border-loft);border-radius:12px;padding:12px;">
                 <div class="row" style="margin:0;"><span style="font-weight:900;text-transform:uppercase;">Итого аренда:</span><span style="font-size:22px;font-weight:900;color:var(--edison);">${fmt(c.total)} ₽</span></div>
-                <div class="row"><span>Предоплата для брони даты:</span><strong>3 000 ₽</strong></div>
+                <div class="row"><span>Предоплата (после подтверждения):</span><strong>3 000 ₽</strong></div>
                 <div class="row"><span>Остаток при заезде:</span><strong>${fmt(c.rest)} ₽</strong></div>
                 <div class="row" style="color:var(--text-muted);font-size:11px;"><span>Возвратный залог при заезде:</span><span>3 000 ₽</span></div>
               </div>
@@ -550,7 +550,8 @@
                   `).join("")}
                 </div>
                 <input class="input" placeholder="Комментарий / повод праздника (необязательно)" value="${state.comment}" oninput="state.comment=this.value" />
-                <button type="submit" class="btn-primary">Забронировать дату (предоплата 3 000 ₽) →</button>
+                <button type="submit" class="btn-primary">Отправить расчёт администратору →</button>
+                <div style="margin-top:8px;font-size:11px;color:var(--text-muted);text-align:center;line-height:1.35;">🔒 Без оплаты на сайте — предоплата 3 000 ₽ переводится напрямую администратору только после подтверждения даты</div>
               </form>
 
               <div style="margin-top:12px;text-align:center;font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;">Или сразу перейти в чат с готовой сметой:</div>
