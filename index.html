@@ -856,7 +856,7 @@
           who: state.exWho
         })
       }).catch(() => {});
-      showToast("✅ Расход сохранён в таблицу!");
+      showToast("✅ Записано в таблицу! Новый баланс отправлен в группу.");
       state.exAmount = "";
       state.exComment = "";
       render();
@@ -917,7 +917,7 @@
 
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:14px;">
               <button type="button" class="nav-btn ${state.staffSubTab==='booking'?'active':''}" style="border:1px solid var(--border-loft);padding:9px 4px;" onclick="state.staffSubTab='booking';render();">➕ Бронь</button>
-              <button type="button" class="nav-btn ${state.staffSubTab==='expense'?'active':''}" style="border:1px solid var(--border-loft);padding:9px 4px;" onclick="state.staffSubTab='expense';render();">💸 Расход</button>
+              <button type="button" class="nav-btn ${state.staffSubTab==='expense'?'active':''}" style="border:1px solid var(--border-loft);padding:9px 4px;" onclick="state.staffSubTab='expense';render();">💸 Расход 50/50</button>
               <button type="button" class="nav-btn ${state.staffSubTab==='tariff'?'active':''}" style="border:1px solid var(--border-loft);padding:9px 4px;" onclick="state.staffSubTab='tariff';render();">💰 Тарифы</button>
             </div>
 
@@ -980,43 +980,47 @@
 
             ${state.staffSubTab === "expense" ? `
               <form onsubmit="submitStaffExpense(event)" style="margin-top:14px;">
-                <div style="font-size:11px;font-weight:800;color:var(--text-muted);">1. Источник оплаты:</div>
+                <div style="font-size:11px;font-weight:800;color:var(--text-muted);">1. Тип операции:</div>
                 <select class="input" onchange="state.exType=this.value;render();">
-                  <option value="50_50" ${state.exType==='50_50'?'selected':''}>💳 Оплачено лично (Саша / Алёна / Денис)</option>
-                  <option value="cashbox" ${state.exType==='cashbox'?'selected':''}>💼 Оплачено из общей кассы лофта</option>
+                  <option value="50_50" ${state.exType==='50_50'?'selected':''}>📉 Расход 50/50 (делится пополам Саша ↔ Денис)</option>
+                  <option value="transfer_den_to_alex" ${state.exType==='transfer_den_to_alex'?'selected':''}>🤝 Денис перевёл долг Александру (не в P&L)</option>
+                  <option value="transfer_alex_to_den" ${state.exType==='transfer_alex_to_den'?'selected':''}>🤝 Александр перевёл долг Денису (не в P&L)</option>
+                  <option value="cashbox" ${state.exType==='cashbox'?'selected':''}>💼 Оплата из общей кассы (без личного долга)</option>
                 </select>
 
                 ${state.exType === "50_50" ? `
-                  <div style="font-size:11px;font-weight:800;color:var(--text-muted);margin-top:10px;">2. Кто оплатил чек:</div>
+                  <div style="font-size:11px;font-weight:800;color:var(--text-muted);margin-top:10px;">2. Кто оплатил (траты Алёны идут в счёт Саши):</div>
                   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px;">
                     <button type="button" class="nav-btn ${state.exWho==='Александр'?'active':''}" style="border:1px solid var(--border-loft);padding:10px 4px;" onclick="state.exWho='Александр';render();">👤 Саша</button>
-                    <button type="button" class="nav-btn ${state.exWho==='Алёна'?'active':''}" style="border:1px solid var(--border-loft);padding:10px 4px;" onclick="state.exWho='Алёна';render();">👩 Алёна</button>
+                    <button type="button" class="nav-btn ${state.exWho==='Алёна'?'active':''}" style="border:1px solid var(--border-loft);padding:10px 4px;" onclick="state.exWho='Алёна';render();">👩 Алёна (→Саша)</button>
                     <button type="button" class="nav-btn ${state.exWho==='Денис'?'active':''}" style="border:1px solid var(--border-loft);padding:10px 4px;" onclick="state.exWho='Денис';render();">👤 Денис</button>
                   </div>
                 ` : ``}
 
-                <div style="font-size:11px;font-weight:800;color:var(--text-muted);margin-top:10px;">3. Зал и категория расхода:</div>
-                <select class="input" onchange="state.exLoft=this.value">
-                  <option value="shared" ${state.exLoft==='shared'?'selected':''}>Общие расходы на оба зала</option>
-                  <option value="bogdanka" ${state.exLoft==='bogdanka'?'selected':''}>Богдана Хмельницкого, 67</option>
-                  <option value="tekstil" ${state.exLoft==='tekstil'?'selected':''}>Текстильщиков, 8к16</option>
-                </select>
-                <select class="input" onchange="state.exCat=this.value">
-                  <option value="Амортизация / Хозтовары / Ремонт">Амортизация / Хозтовары / Ремонт</option>
-                  <option value="Коммунальные услуги">Коммунальные услуги (КУ)</option>
-                  <option value="Аренда помещения">Аренда помещения</option>
-                  <option value="Клининг / Уборка">Клининг / Уборка</option>
-                  <option value="ФОТ / Выплаты админам">ФОТ / Выплаты админам</option>
-                  <option value="Кальян и расходники">Кальян и расходники</option>
-                  <option value="Реклама (Авито / ВК / Карты)">Реклама (Авито / ВК / Карты)</option>
-                  <option value="Комиссия площадки (Авито)">Комиссия площадки (Авито)</option>
-                  <option value="Прочие расходы">Прочие расходы</option>
-                </select>
+                ${state.exType.indexOf("transfer") === -1 ? `
+                  <div style="font-size:11px;font-weight:800;color:var(--text-muted);margin-top:10px;">3. Зал и категория расхода:</div>
+                  <select class="input" onchange="state.exLoft=this.value">
+                    <option value="shared" ${state.exLoft==='shared'?'selected':''}>Общие на оба зала (50/50)</option>
+                    <option value="bogdanka" ${state.exLoft==='bogdanka'?'selected':''}>Богдана Хмельницкого, 67</option>
+                    <option value="tekstil" ${state.exLoft==='tekstil'?'selected':''}>Текстильщиков, 8к16</option>
+                  </select>
+                  <select class="input" onchange="state.exCat=this.value">
+                    <option value="Амортизация / Хозтовары / Ремонт">Амортизация / Хозтовары / Ремонт</option>
+                    <option value="Коммунальные услуги">Коммунальные услуги (КУ)</option>
+                    <option value="Аренда помещения">Аренда помещения</option>
+                    <option value="Клининг / Уборка">Клининг / Уборка</option>
+                    <option value="ФОТ / Выплаты админам">ФОТ / Выплаты админам</option>
+                    <option value="Кальян и расходники">Кальян и расходники</option>
+                    <option value="Реклама (Авито / ВК / Карты)">Реклама (Авито / ВК / Карты)</option>
+                    <option value="Комиссия площадки (Авито)">Комиссия площадки (Авито)</option>
+                    <option value="Прочие расходы">Прочие расходы</option>
+                  </select>
+                ` : ``}
 
-                <input type="number" class="input" placeholder="Сумма в рублях (например 1500)" value="${state.exAmount}" oninput="state.exAmount=this.value" required />
+                <input type="number" class="input" placeholder="Сумма в рублях (например 5000)" value="${state.exAmount}" oninput="state.exAmount=this.value" required />
                 <input class="input" placeholder="Комментарий (за что оплата)" value="${state.exComment}" oninput="state.exComment=this.value" />
 
-                <button type="submit" class="btn-primary" style="margin-top:14px;">💾 Сохранить расход в таблицу</button>
+                <button type="submit" class="btn-primary" style="margin-top:14px;">💾 Сохранить и пересчитать баланс 50/50</button>
               </form>
             ` : ``}
 
