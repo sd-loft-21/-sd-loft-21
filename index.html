@@ -173,6 +173,14 @@
       PREPAYMENT_RUB: 3000,
       DEPOSIT_RUB: 3000,
       HOOKAH_RUB: 1000,
+      GUESTS_FREE_LIMIT: 20,
+      GUESTS_21_25_RUB: 1000,
+      GUESTS_26_30_RUB: 2000,
+      GUESTS_31_PLUS_RUB: 500,
+      PROMO_MAIN_CODE: "ЁЛКА",
+      PROMO_MAIN_PCT: 10,
+      PROMO_HOT_CODE: "ГОРИТ15",
+      PROMO_HOT_PCT: 15,
       TG_USERNAME: "bracho21",
       PHONE_RAW: "79871261203",
       PHONE_READABLE: "+7 (987) 126-12-03",
@@ -326,6 +334,30 @@
               CONFIG.BOOKED_HOURS.bogdanka = d.bookedHours.bogdanka || {};
               CONFIG.BOOKED_HOURS.tekstil = d.bookedHours.tekstil || {};
             }
+            if (d.tariffs) {
+              if (d.tariffs.baseRates) {
+                CONFIG.BASE_RATES = d.tariffs.baseRates;
+              }
+              if (d.tariffs.extras) {
+                const ex = d.tariffs.extras;
+                if (ex.prepaymentRub) CONFIG.PREPAYMENT_RUB = ex.prepaymentRub;
+                if (ex.depositRub) CONFIG.DEPOSIT_RUB = ex.depositRub;
+                if (typeof ex.hookahRub === "number") CONFIG.HOOKAH_RUB = ex.hookahRub;
+                if (ex.guestsFreeLimit) CONFIG.GUESTS_FREE_LIMIT = ex.guestsFreeLimit;
+                if (typeof ex.guests21_25Rub === "number") CONFIG.GUESTS_21_25_RUB = ex.guests21_25Rub;
+                if (typeof ex.guests26_30Rub === "number") CONFIG.GUESTS_26_30_RUB = ex.guests26_30Rub;
+                if (typeof ex.guests31PlusRub === "number") CONFIG.GUESTS_31_PLUS_RUB = ex.guests31PlusRub;
+              }
+              if (d.tariffs.promos) {
+                if (d.tariffs.promos.mainCode) CONFIG.PROMO_MAIN_CODE = d.tariffs.promos.mainCode;
+                if (d.tariffs.promos.mainPct) CONFIG.PROMO_MAIN_PCT = d.tariffs.promos.mainPct;
+                if (d.tariffs.promos.hotCode) CONFIG.PROMO_HOT_CODE = d.tariffs.promos.hotCode;
+                if (d.tariffs.promos.hotPct) CONFIG.PROMO_HOT_PCT = d.tariffs.promos.hotPct;
+              }
+              if (d.tariffs.specialPrices) {
+                state.specialTariffs = d.tariffs.specialPrices;
+              }
+            }
             if (d.customPrices) {
               if (d.customPrices.bogdanka || d.customPrices.tekstil) {
                 state.customPrices = d.customPrices;
@@ -368,10 +400,13 @@
     function getRate(dateStr, loftId) {
       const loftMap = (state.customPrices && state.customPrices[loftId]) || {};
       const sharedMap = (state.customPrices && state.customPrices.shared) || {};
-      const sp = loftMap[dateStr] || sharedMap[dateStr] || CONFIG.SPECIAL_DAILY[dateStr];
+      const spSheetObj = (state.specialTariffs && state.specialTariffs[loftId] && state.specialTariffs[loftId][dateStr]) ||
+                         (state.specialTariffs && state.specialTariffs.shared && state.specialTariffs.shared[dateStr]) || null;
+      const sp = loftMap[dateStr] || sharedMap[dateStr] || (spSheetObj ? spSheetObj.daily : 0) || CONFIG.SPECIAL_DAILY[dateStr];
       if (sp) {
-        const h = Math.round((sp / 6.67) / 100) * 100;
-        return { hour: h, daily: sp, label: dateStr.slice(5) === "12-31" ? "Новогодняя ночь" : "Праздничный / спецтариф" };
+        const h = (spSheetObj && spSheetObj.hour && spSheetObj.daily === sp) ? spSheetObj.hour : (Math.round((sp / 6.67) / 100) * 100);
+        const lbl = (spSheetObj && spSheetObj.label) ? spSheetObj.label : (dateStr.slice(5) === "12-31" ? "Новогодняя ночь" : "Праздничный / спецтариф");
+        return { hour: h, daily: sp, label: lbl };
       }
       const p = dateStr.split("-").map(Number);
       const dow = new Date(p[0], p[1] - 1, p[2]).getDay();
@@ -397,9 +432,10 @@
       const suggestDaily = state.mode === "hourly" && busyHrs.length === 0 && rawH >= r.daily;
       const base = state.mode === "daily" ? r.daily : rawH;
       let gExtra = 0;
-      if (state.guests > 20 && state.guests <= 25) gExtra = 1000;
-      else if (state.guests > 25 && state.guests <= 30) gExtra = 2000;
-      else if (state.guests > 30) gExtra = 2000 + (state.guests - 30) * 500;
+      const lim = CONFIG.GUESTS_FREE_LIMIT || 20;
+      if (state.guests > lim && state.guests <= lim + 5) gExtra = CONFIG.GUESTS_21_25_RUB;
+      else if (state.guests > lim + 5 && state.guests <= lim + 10) gExtra = CONFIG.GUESTS_26_30_RUB;
+      else if (state.guests > lim + 10) gExtra = CONFIG.GUESTS_26_30_RUB + (state.guests - (lim + 10)) * CONFIG.GUESTS_31_PLUS_RUB;
       const hookahRub = state.hookah ? CONFIG.HOOKAH_RUB : 0;
       const techRub = state.techHour ? Math.round(r.hour * 0.5) : 0;
       const extras = hookahRub + techRub;
@@ -419,11 +455,11 @@
         "Дата: " + state.date + "\n" +
         "Формат: " + slot + "\n" +
         "Гостей: " + state.guests + " чел.\n" +
-        (state.hookah ? "Кальян: +1 000 ₽\n" : "") +
+        (state.hookah ? "Кальян: +" + fmt(CONFIG.HOOKAH_RUB) + " ₽\n" : "") +
         (state.techHour ? "Тех. час: включён\n" : "") +
         (state.promoPct > 0 ? "Промокод " + state.promoCode + " (−" + state.promoPct + "%): −" + fmt(c.disc) + " ₽\n" : "") +
         "Итого аренда: " + fmt(c.total) + " ₽\n" +
-        "Предоплата после подтверждения: 3 000 ₽ (возвратный залог при заезде: 3 000 ₽)\n" +
+        "Предоплата после подтверждения: " + fmt(CONFIG.PREPAYMENT_RUB) + " ₽ (возвратный залог при заезде: " + fmt(CONFIG.DEPOSIT_RUB) + " ₽)\n" +
         (state.name ? "Имя: " + state.name + "\n" : "") +
         (state.phone ? "Телефон: " + state.phone : "")
       );
@@ -470,7 +506,7 @@
             baseRub: c.base, guestSurchargeRub: c.gExtra,
             hookahRub: c.hookahRub, extrasRub: c.extras,
             promoCode: state.promoCode, discountRub: c.disc, totalRub: c.total,
-            prepaymentRub: 3000, depositRub: 3000,
+            prepaymentRub: CONFIG.PREPAYMENT_RUB, depositRub: CONFIG.DEPOSIT_RUB,
             clientName: state.name, clientPhone: state.phone, contactChannel: state.channel, comment: state.comment
           })
         }).catch(() => {});
@@ -549,12 +585,14 @@
     window.applyPromo = function() {
       const v = (document.getElementById("promoInp").value || "").trim().toUpperCase();
       state.promoCode = v;
-      if (v === "ЁЛКА" || v === "ЕЛКА" || v === "ELKA") {
-        state.promoPct = 10;
-        showToast("Промокод ЁЛКА (−10%) применён!");
-      } else if (v === "ГОРИТ15" || v === "СВОИ15" || v === "HOT15") {
-        state.promoPct = 15;
-        showToast("Горящий промокод (−15%) применён!");
+      const mainC = (CONFIG.PROMO_MAIN_CODE || "ЁЛКА").toUpperCase();
+      const hotC = (CONFIG.PROMO_HOT_CODE || "ГОРИТ15").toUpperCase();
+      if (v === mainC || v === mainC.replace(/Ё/g, "Е") || v === "ЁЛКА" || v === "ЕЛКА" || v === "ELKA") {
+        state.promoPct = CONFIG.PROMO_MAIN_PCT || 10;
+        showToast("Промокод " + v + " (−" + state.promoPct + "%) применён!");
+      } else if (v === hotC || v === "ГОРИТ15" || v === "СВОИ15" || v === "HOT15") {
+        state.promoPct = CONFIG.PROMO_HOT_PCT || 15;
+        showToast("Горящий промокод (−" + state.promoPct + "%) применён!");
       } else {
         state.promoPct = 0;
         showToast("Промокод не найден");
@@ -637,7 +675,7 @@
               <div class="loft-switch">
                 <button type="button" class="loft-btn ${state.mode==='daily'?'active':''}" ${partBusy?'disabled':''} onclick="setMode('daily')">
                   <div>Пакет «Сутки» (16:00–04:00)</div>
-                  <div style="font-size:11px;opacity:0.9;margin-top:3px;">${partBusy ? 'Недоступно (часть часов занята)' : (fmt(c.r.daily) + ' ₽ до 20 чел.')}</div>
+                  <div style="font-size:11px;opacity:0.9;margin-top:3px;">${partBusy ? 'Недоступно (часть часов занята)' : (fmt(c.r.daily) + ' ₽ до ' + CONFIG.GUESTS_FREE_LIMIT + ' чел.')}</div>
                 </button>
                 <button type="button" class="loft-btn ${state.mode==='hourly'?'active':''}" onclick="setMode('hourly')">
                   <div>Почасовая (от 3 ч)</div>
@@ -661,14 +699,14 @@
 
               <div class="cal-box" style="margin-top:12px;">
                 <div class="row" style="font-weight:800;">
-                  <span>Количество гостей (до 20 чел. без доплат):</span>
+                  <span>Количество гостей (до ${CONFIG.GUESTS_FREE_LIMIT} чел. без доплат):</span>
                   <span style="color:var(--edison);font-size:14px;">${state.guests} чел.</span>
                 </div>
                 <input type="range" min="10" max="50" value="${state.guests}" oninput="state.guests=Number(this.value);render();" style="width:100%;accent-color:#B4532A;cursor:pointer;" />
                 ${state.guests > 40 ? `<div style="font-size:11px;color:var(--edison);margin-top:5px;font-weight:700;">Свыше 40 гостей рассадка согласуется индивидуально с @bracho21.</div>` : ``}
                 <div class="chat-grid" style="margin-top:12px;">
                   <label class="btn-outline" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-                    <input type="checkbox" ${state.hookah?'checked':''} onchange="state.hookah=this.checked;render();" /> Кальян (+1 000 ₽)
+                    <input type="checkbox" ${state.hookah?'checked':''} onchange="state.hookah=this.checked;render();" /> Кальян (+${fmt(CONFIG.HOOKAH_RUB)} ₽)
                   </label>
                   <label class="btn-outline" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
                     <input type="checkbox" ${state.techHour?'checked':''} onchange="state.techHour=this.checked;render();" /> Тех. час (+${fmt(Math.round(c.r.hour*0.5))} ₽)
@@ -696,15 +734,15 @@
               </div>
 
               <div style="display:flex;gap:6px;margin:10px 0;">
-                <input id="promoInp" class="input" style="margin-top:0;text-transform:uppercase;" placeholder="Промокод (ЁЛКА / ГОРИТ15)" value="${state.promoCode}" />
+                <input id="promoInp" class="input" style="margin-top:0;text-transform:uppercase;" placeholder="Промокод (${CONFIG.PROMO_MAIN_CODE} / ${CONFIG.PROMO_HOT_CODE})" value="${state.promoCode}" />
                 <button type="button" class="btn-outline" style="padding:0 14px;color:var(--edison);border-color:var(--edison);" onclick="applyPromo()">ОК</button>
               </div>
 
               <div style="background:var(--bg-iron);border:1px solid var(--border-loft);border-radius:12px;padding:12px;">
                 <div class="row" style="margin:0;"><span style="font-weight:900;text-transform:uppercase;">Итого аренда:</span><span style="font-size:22px;font-weight:900;color:var(--edison);">${fmt(c.total)} ₽</span></div>
-                <div class="row"><span>Предоплата (после подтверждения):</span><strong>3 000 ₽</strong></div>
+                <div class="row"><span>Предоплата (после подтверждения):</span><strong>${fmt(CONFIG.PREPAYMENT_RUB)} ₽</strong></div>
                 <div class="row"><span>Остаток при заезде:</span><strong>${fmt(c.rest)} ₽</strong></div>
-                <div class="row" style="color:var(--text-muted);font-size:11px;"><span>Возвратный залог при заезде:</span><span>3 000 ₽</span></div>
+                <div class="row" style="color:var(--text-muted);font-size:11px;"><span>Возвратный залог при заезде:</span><span>${fmt(CONFIG.DEPOSIT_RUB)} ₽</span></div>
               </div>
 
               <form onsubmit="submitBooking(event)">
@@ -717,7 +755,7 @@
                 </div>
                 <input class="input" placeholder="Комментарий / повод праздника (необязательно)" value="${state.comment}" oninput="state.comment=this.value" />
                 <button type="submit" class="btn-primary" ${fullBusy?'disabled':''}>${fullBusy ? 'Дата занята — выберите другую' : 'Отправить расчёт администратору →'}</button>
-                <div style="margin-top:8px;font-size:11px;color:var(--text-muted);text-align:center;line-height:1.35;">🔒 Без оплаты на сайте — предоплата 3 000 ₽ переводится напрямую администратору только после подтверждения даты</div>
+                <div style="margin-top:8px;font-size:11px;color:var(--text-muted);text-align:center;line-height:1.35;">🔒 Без оплаты на сайте — предоплата ${fmt(CONFIG.PREPAYMENT_RUB)} ₽ переводится напрямую администратору только после подтверждения даты</div>
               </form>
 
               <div style="margin-top:12px;text-align:center;font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;">Или сразу перейти в чат с готовой сметой:</div>
