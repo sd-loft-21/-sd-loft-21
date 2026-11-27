@@ -278,8 +278,36 @@
     const defaultISO = tomorrowDt.getFullYear() + "-" + String(tomorrowDt.getMonth() + 1).padStart(2, "0") + "-" + String(tomorrowDt.getDate()).padStart(2, "0");
 
     const isMiniOnly = window.location.search.indexOf("mode=mini") !== -1;
+    const isStaffOnly = window.location.search.indexOf("mode=staff") !== -1;
     const state = {
-      tab: isMiniOnly ? "mini" : "site",
+      tab: isStaffOnly ? "staff" : (isMiniOnly ? "mini" : "site"),
+      staffSubTab: "booking",
+      staffPinOk: localStorage.getItem("sd_staff_pin_ok") === "1",
+      stLoft: "bogdanka",
+      stDate: defaultISO < "2026-12-01" ? "2026-12-06" : defaultISO,
+      stMode: "daily",
+      stSlot: "16:00–21:00",
+      stGuests: 20,
+      stRent: 12000,
+      stHookah: false,
+      stForOwn: false,
+      stPrepay: 3000,
+      stWho: "Денис",
+      stName: "",
+      stPhone: "",
+      stComment: "",
+      exType: "50_50",
+      exWho: "Александр",
+      exLoft: "shared",
+      exCat: "Амортизация / Хозтовары / Ремонт",
+      exAmount: "",
+      exComment: "",
+      trSpecial: false,
+      trLoft: "оба",
+      trDay: "weekday",
+      trDate: defaultISO,
+      trHour: 1500,
+      trDaily: 9000,
       loft: "bogdanka",
       zoneIdx: 0,
       calYear: 2026,
@@ -771,10 +799,282 @@
       `;
     }
 
+
+    window.submitStaffBooking = function(ev) {
+      ev.preventDefault();
+      if (!state.scriptUrl) { showToast("Не задан URL таблицы"); return; }
+      fetch(state.scriptUrl, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          staffAction: "add_booking",
+          pin: CONFIG.ADMIN_PIN,
+          loftId: state.stLoft,
+          dateISO: state.stDate,
+          mode: state.stMode,
+          slot: state.stSlot,
+          guests: Number(state.stGuests) || 20,
+          rentRub: state.stForOwn ? 0 : (Number(state.stRent) || 0),
+          hookahRub: (!state.stForOwn && state.stHookah) ? CONFIG.HOOKAH_RUB : 0,
+          isForOwn: state.stForOwn,
+          prepayRub: state.stForOwn ? 0 : (Number(state.stPrepay) || 0),
+          who: state.stWho,
+          clientName: state.stName,
+          clientPhone: state.stPhone,
+          comment: state.stComment
+        })
+      }).catch(() => {});
+      showToast("✅ Бронь отправлена! Проверьте карточку в группе Telegram.");
+      state.stName = "";
+      state.stPhone = "";
+      state.stComment = "";
+      setTimeout(loadLiveBlocked, 1800);
+      render();
+      if (window.Telegram && window.Telegram.WebApp && isStaffOnly) {
+        setTimeout(() => { try { window.Telegram.WebApp.close(); } catch (_) {} }, 1300);
+      }
+    };
+
+    window.submitStaffExpense = function(ev) {
+      ev.preventDefault();
+      const amt = Number(state.exAmount) || 0;
+      if (amt <= 0) { showToast("Укажите сумму в рублях"); return; }
+      fetch(state.scriptUrl, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          staffAction: "add_expense",
+          pin: CONFIG.ADMIN_PIN,
+          opType: state.exType,
+          whoPaid: state.exWho,
+          loft: state.exLoft,
+          category: state.exCat,
+          amount: amt,
+          comment: state.exComment,
+          who: state.exWho
+        })
+      }).catch(() => {});
+      showToast("✅ Записано в таблицу! Новый баланс отправлен в группу.");
+      state.exAmount = "";
+      state.exComment = "";
+      render();
+      if (window.Telegram && window.Telegram.WebApp && isStaffOnly) {
+        setTimeout(() => { try { window.Telegram.WebApp.close(); } catch (_) {} }, 1300);
+      }
+    };
+
+    window.submitStaffTariff = function(ev) {
+      ev.preventDefault();
+      fetch(state.scriptUrl, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          staffAction: "set_tariff",
+          pin: CONFIG.ADMIN_PIN,
+          isSpecialDate: state.trSpecial,
+          loftTarget: state.trLoft,
+          dayGroup: state.trDay === "weekday" ? "будни" : (state.trDay === "friSun" ? "пт" : "сб"),
+          dateISO: state.trDate,
+          hourRub: Number(state.trHour) || 1500,
+          dailyRub: Number(state.trDaily) || 9000
+        })
+      }).catch(() => {});
+      showToast("✅ Тариф обновлён в 07_Тарифы и на сайте!");
+      setTimeout(loadLiveBlocked, 1800);
+    };
+
+    function renderStaffApp() {
+      if (!state.staffPinOk) {
+        return `
+          <div class="mini-container">
+            <div class="card" style="margin-top:14px;">
+              <div class="badge">🔒 Доступ только для команды SD Loft</div>
+              <h2 style="margin-top:10px;">Пульт управления SD Loft</h2>
+              <p class="muted" style="margin-top:6px;">Введите PIN-код один раз на этом устройстве (2121):</p>
+              <input id="stPinInp" type="tel" class="input" placeholder="PIN-код" />
+              <button class="btn-primary" onclick="if(document.getElementById('stPinInp').value.trim()===CONFIG.ADMIN_PIN){state.staffPinOk=true;localStorage.setItem('sd_staff_pin_ok','1');render();}else{showToast('Неверный PIN-код');}">Открыть пульт →</button>
+            </div>
+          </div>
+        `;
+      }
+
+      const autoRate = getRate(state.stDate, state.stLoft);
+      const busyWarn = isFullDayBusy(state.stDate, state.stLoft);
+
+      return `
+        <div class="mini-container">
+          <div class="card" style="margin-top:8px;padding:18px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+              <div>
+                <div style="font-size:10px;font-weight:800;color:var(--edison);text-transform:uppercase;">Мини-приложение администратора</div>
+                <h2 style="font-size:19px;">🎛 Пульт SD Loft</h2>
+              </div>
+              <button type="button" class="btn-outline" onclick="setTab('mini')">🧮 Калькулятор</button>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:14px;">
+              <button type="button" class="nav-btn ${state.staffSubTab==='booking'?'active':''}" style="border:1px solid var(--border-loft);padding:9px 4px;" onclick="state.staffSubTab='booking';render();">➕ Бронь</button>
+              <button type="button" class="nav-btn ${state.staffSubTab==='expense'?'active':''}" style="border:1px solid var(--border-loft);padding:9px 4px;" onclick="state.staffSubTab='expense';render();">💸 Расход 50/50</button>
+              <button type="button" class="nav-btn ${state.staffSubTab==='tariff'?'active':''}" style="border:1px solid var(--border-loft);padding:9px 4px;" onclick="state.staffSubTab='tariff';render();">💰 Тарифы</button>
+            </div>
+
+            ${state.staffSubTab === "booking" ? `
+              <form onsubmit="submitStaffBooking(event)" style="margin-top:14px;">
+                <div style="font-size:11px;font-weight:800;color:var(--text-muted);">1. Выберите лофт:</div>
+                <div class="chat-grid" style="margin-top:6px;">
+                  <button type="button" class="nav-btn ${state.stLoft==='bogdanka'?'active':''}" style="border:1px solid var(--border-loft);padding:10px;" onclick="state.stLoft='bogdanka';state.stRent=getRate(state.stDate,'bogdanka').daily;render();">🟧 Богданка, 67</button>
+                  <button type="button" class="nav-btn ${state.stLoft==='tekstil'?'active':''}" style="border:1px solid var(--border-loft);padding:10px;" onclick="state.stLoft='tekstil';state.stRent=getRate(state.stDate,'tekstil').daily;render();">🟩 Текстильщиков</button>
+                </div>
+
+                <div class="row" style="margin-top:12px;">
+                  <span style="font-weight:800;">2. Дата праздника:</span>
+                  <input type="date" value="${state.stDate}" onchange="state.stDate=this.value;state.stRent=getRate(this.value,state.stLoft).daily;render();" style="background:var(--bg-iron);border:1px solid var(--border-loft);color:var(--text-main);padding:7px 10px;border-radius:9px;font-weight:800;" required />
+                </div>
+                ${busyWarn ? `<div style="background:#2A1D17;border:1px solid var(--brick);padding:8px 10px;border-radius:10px;font-size:11px;color:var(--edison);font-weight:800;">⚠️ Внимание: эта дата уже числится занятой на сайте!</div>` : ``}
+
+                <div class="chat-grid" style="margin-top:10px;">
+                  <button type="button" class="nav-btn ${state.stMode==='daily' && !state.stForOwn?'active':''}" style="border:1px solid var(--border-loft);padding:9px;" onclick="state.stForOwn=false;state.stMode='daily';state.stRent=${autoRate.daily};render();">Сутки (${fmt(autoRate.daily)} ₽)</button>
+                  <button type="button" class="nav-btn ${state.stMode==='hourly' && !state.stForOwn?'active':''}" style="border:1px solid var(--border-loft);padding:9px;" onclick="state.stForOwn=false;state.stMode='hourly';state.stRent=${autoRate.hour*4};render();">Почасовая</button>
+                </div>
+                <button type="button" class="btn-outline" style="width:100%;margin-top:6px;${state.stForOwn?'border-color:var(--edison);color:var(--edison);':''}" onclick="state.stForOwn=!state.stForOwn;render();">🤝 ${state.stForOwn ? 'Выбрано: Бронь для своих (0 ₽)' : 'Сделать бронь «Для своих» (0 ₽)'}</button>
+
+                ${state.stMode === "hourly" && !state.stForOwn ? `
+                  <input class="input" placeholder="Часы заезда–выезда (например 15:00–20:00)" value="${state.stSlot}" oninput="state.stSlot=this.value" />
+                ` : ``}
+
+                ${!state.stForOwn ? `
+                  <div class="chat-grid" style="margin-top:10px;">
+                    <div>
+                      <div style="font-size:11px;color:var(--text-muted);">Сумма аренды зала (₽):</div>
+                      <input type="number" class="input" style="margin-top:4px;" value="${state.stRent}" oninput="state.stRent=this.value" required />
+                    </div>
+                    <div>
+                      <div style="font-size:11px;color:var(--text-muted);">Предоплата получена (₽):</div>
+                      <input type="number" class="input" style="margin-top:4px;" value="${state.stPrepay}" oninput="state.stPrepay=this.value" required />
+                    </div>
+                  </div>
+                  <div class="chat-grid" style="margin-top:8px;">
+                    <label class="btn-outline" style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+                      <input type="checkbox" ${state.stHookah?'checked':''} onchange="state.stHookah=this.checked;render();" /> +Кальян (${CONFIG.HOOKAH_RUB} ₽)
+                    </label>
+                    <select class="input" style="margin-top:0;padding:8px;" onchange="state.stWho=this.value">
+                      <option value="Денис" ${state.stWho==='Денис'?'selected':''}>Принял: Денис</option>
+                      <option value="Саша" ${state.stWho==='Саша'?'selected':''}>Принял: Саша</option>
+                      <option value="Админ" ${state.stWho==='Админ'?'selected':''}>Принял: Админ</option>
+                    </select>
+                  </div>
+                ` : ``}
+
+                <div class="chat-grid" style="margin-top:8px;">
+                  <input class="input" placeholder="Имя гостя" value="${state.stName}" oninput="state.stName=this.value" />
+                  <input class="input" type="tel" placeholder="Телефон (+7...)" value="${state.stPhone}" oninput="state.stPhone=this.value" />
+                </div>
+                <input class="input" placeholder="Гостей (по умолч. 20) / Комментарий / @telegram" value="${state.stComment}" oninput="state.stComment=this.value" />
+
+                <button type="submit" class="btn-primary" style="margin-top:14px;">✅ Записать бронь и закрыть дату везде</button>
+              </form>
+            ` : ``}
+
+            ${state.staffSubTab === "expense" ? `
+              <form onsubmit="submitStaffExpense(event)" style="margin-top:14px;">
+                <div style="font-size:11px;font-weight:800;color:var(--text-muted);">1. Тип операции:</div>
+                <select class="input" onchange="state.exType=this.value;render();">
+                  <option value="50_50" ${state.exType==='50_50'?'selected':''}>📉 Расход 50/50 (делится пополам Саша ↔ Денис)</option>
+                  <option value="transfer_den_to_alex" ${state.exType==='transfer_den_to_alex'?'selected':''}>🤝 Денис перевёл долг Александру (не в P&L)</option>
+                  <option value="transfer_alex_to_den" ${state.exType==='transfer_alex_to_den'?'selected':''}>🤝 Александр перевёл долг Денису (не в P&L)</option>
+                  <option value="cashbox" ${state.exType==='cashbox'?'selected':''}>💼 Оплата из общей кассы (без личного долга)</option>
+                </select>
+
+                ${state.exType === "50_50" ? `
+                  <div style="font-size:11px;font-weight:800;color:var(--text-muted);margin-top:10px;">2. Кто оплатил (траты Алёны идут в счёт Саши):</div>
+                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px;">
+                    <button type="button" class="nav-btn ${state.exWho==='Александр'?'active':''}" style="border:1px solid var(--border-loft);padding:10px 4px;" onclick="state.exWho='Александр';render();">👤 Саша</button>
+                    <button type="button" class="nav-btn ${state.exWho==='Алёна'?'active':''}" style="border:1px solid var(--border-loft);padding:10px 4px;" onclick="state.exWho='Алёна';render();">👩 Алёна (→Саша)</button>
+                    <button type="button" class="nav-btn ${state.exWho==='Денис'?'active':''}" style="border:1px solid var(--border-loft);padding:10px 4px;" onclick="state.exWho='Денис';render();">👤 Денис</button>
+                  </div>
+                ` : ``}
+
+                ${state.exType.indexOf("transfer") === -1 ? `
+                  <div style="font-size:11px;font-weight:800;color:var(--text-muted);margin-top:10px;">3. Зал и категория расхода:</div>
+                  <select class="input" onchange="state.exLoft=this.value">
+                    <option value="shared" ${state.exLoft==='shared'?'selected':''}>Общие на оба зала (50/50)</option>
+                    <option value="bogdanka" ${state.exLoft==='bogdanka'?'selected':''}>Богдана Хмельницкого, 67</option>
+                    <option value="tekstil" ${state.exLoft==='tekstil'?'selected':''}>Текстильщиков, 8к16</option>
+                  </select>
+                  <select class="input" onchange="state.exCat=this.value">
+                    <option value="Амортизация / Хозтовары / Ремонт">Амортизация / Хозтовары / Ремонт</option>
+                    <option value="Коммунальные услуги">Коммунальные услуги (КУ)</option>
+                    <option value="Аренда помещения">Аренда помещения</option>
+                    <option value="Клининг / Уборка">Клининг / Уборка</option>
+                    <option value="ФОТ / Выплаты админам">ФОТ / Выплаты админам</option>
+                    <option value="Кальян и расходники">Кальян и расходники</option>
+                    <option value="Реклама (Авито / ВК / Карты)">Реклама (Авито / ВК / Карты)</option>
+                    <option value="Комиссия площадки (Авито)">Комиссия площадки (Авито)</option>
+                    <option value="Прочие расходы">Прочие расходы</option>
+                  </select>
+                ` : ``}
+
+                <input type="number" class="input" placeholder="Сумма в рублях (например 5000)" value="${state.exAmount}" oninput="state.exAmount=this.value" required />
+                <input class="input" placeholder="Комментарий (за что оплата)" value="${state.exComment}" oninput="state.exComment=this.value" />
+
+                <button type="submit" class="btn-primary" style="margin-top:14px;">💾 Сохранить и пересчитать баланс 50/50</button>
+              </form>
+            ` : ``}
+
+            ${state.staffSubTab === "tariff" ? `
+              <form onsubmit="submitStaffTariff(event)" style="margin-top:14px;">
+                <div class="chat-grid">
+                  <button type="button" class="nav-btn ${!state.trSpecial?'active':''}" style="border:1px solid var(--border-loft);padding:9px;" onclick="state.trSpecial=false;render();">По дням недели</button>
+                  <button type="button" class="nav-btn ${state.trSpecial?'active':''}" style="border:1px solid var(--border-loft);padding:9px;" onclick="state.trSpecial=true;render();">Спеццена на дату</button>
+                </div>
+
+                <select class="input" onchange="state.trLoft=this.value">
+                  <option value="оба" ${state.trLoft==='оба'?'selected':''}>Оба лофта сразу</option>
+                  <option value="bogdanka" ${state.trLoft==='bogdanka'?'selected':''}>Только Богданка, 67</option>
+                  <option value="tekstil" ${state.trLoft==='tekstil'?'selected':''}>Только Текстильщиков, 8к16</option>
+                </select>
+
+                ${!state.trSpecial ? `
+                  <select class="input" onchange="state.trDay=this.value">
+                    <option value="weekday" ${state.trDay==='weekday'?'selected':''}>Будни (Пн–Чт)</option>
+                    <option value="friSun" ${state.trDay==='friSun'?'selected':''}>Пятница и Воскресенье</option>
+                    <option value="saturday" ${state.trDay==='saturday'?'selected':''}>Суббота</option>
+                  </select>
+                ` : `
+                  <input type="date" class="input" value="${state.trDate}" onchange="state.trDate=this.value" required />
+                `}
+
+                <div class="chat-grid" style="margin-top:8px;">
+                  <div>
+                    <div style="font-size:11px;color:var(--text-muted);">Новая цена 1 часа (₽):</div>
+                    <input type="number" class="input" style="margin-top:4px;" value="${state.trHour}" oninput="state.trHour=this.value" required />
+                  </div>
+                  <div>
+                    <div style="font-size:11px;color:var(--text-muted);">Новая цена Суток (₽):</div>
+                    <input type="number" class="input" style="margin-top:4px;" value="${state.trDaily}" oninput="state.trDaily=this.value" required />
+                  </div>
+                </div>
+
+                <button type="submit" class="btn-primary" style="margin-top:14px;">💰 Обновить тариф на сайте и в боте</button>
+              </form>
+            ` : ``}
+          </div>
+        </div>
+      `;
+    }
+
     function render() {
       const root = document.getElementById("app");
       const lf = LOFTS[state.loft];
       const zn = lf.zones[state.zoneIdx] || lf.zones[0];
+
+      if (state.tab === "staff") {
+        root.innerHTML = renderStaffApp();
+        return;
+      }
 
       if (state.tab === "mini") {
         root.innerHTML = `<div class="mini-container">${!isMiniOnly ? `<div style="margin-bottom:8px;"><button class="btn-outline" onclick="setTab('site')">← Вернуться к полной версии сайта</button></div>` : ``}${renderCalculatorBlock()}</div>`;
@@ -918,7 +1218,7 @@
     render();
     loadLiveBlocked();
 
-    if (window.location.hash.indexOf("tgWebAppData") !== -1 || isMiniOnly || navigator.userAgent.indexOf("Telegram") !== -1) {
+    if (window.location.hash.indexOf("tgWebAppData") !== -1 || isMiniOnly || isStaffOnly || navigator.userAgent.indexOf("Telegram") !== -1) {
       var tgScript = document.createElement("script");
       tgScript.src = "https://telegram.org/js/telegram-web-app.js";
       tgScript.async = true;
