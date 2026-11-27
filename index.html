@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>SD Loft Чебоксары — Два лофта по 120 м² | Расчёт и бронирование</title>
   <meta name="description" content="Аренда стильных лофтов SD Loft в Чебоксарах (ул. Богдана Хмельницкого, 67 с мангалом и ул. Текстильщиков, 8к16). Караоке, PlayStation, клубный свет, 0 ₽ пробковый сбор, шумим 24/7!" />
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
       --bg-iron: #141210;
@@ -166,7 +165,7 @@
     const CONFIG = {
       // Вставьте сюда ссылку /exec из вашей Google Таблицы (после Шага 1 инструкции),
       // чтобы занятые даты и заявки синхронизировались у всех гостей автоматически:
-      9290662460:AAHUCdMrCROSWWwK25a2zOJJqgcg3BEZn9c: "",
+      GOOGLE_SCRIPT_URL: "",
 
       ADMIN_PIN: "2121",
       PREPAYMENT_RUB: 3000,
@@ -714,6 +713,20 @@
 
     render();
     loadLiveBlocked();
+
+    // Подгружаем Telegram WebApp SDK фоном ПОСЛЕ отрисовки сайта (не тормозит загрузку в РФ без VPN)
+    if (window.location.hash.indexOf("tgWebAppData") !== -1 || isMiniOnly || navigator.userAgent.indexOf("Telegram") !== -1) {
+      var tgScript = document.createElement("script");
+      tgScript.src = "https://telegram.org/js/telegram-web-app.js";
+      tgScript.async = true;
+      tgScript.onload = function() {
+        if (window.Telegram && window.Telegram.WebApp) {
+          window.Telegram.WebApp.ready();
+          window.Telegram.WebApp.expand();
+        }
+      };
+      document.body.appendChild(tgScript);
+    }
   </script>
 </body>
 </html>
