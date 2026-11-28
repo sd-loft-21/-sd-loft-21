@@ -627,6 +627,7 @@
     }
 
     .chat-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; margin-top: 10px; }
+    .chat-grid .input { padding: 12px 11px; }
     .btn-outline {
       background: rgba(18, 15, 13, 0.78);
       border: 1px solid var(--border-soft);
@@ -1033,7 +1034,7 @@
       stCalMonth: Number(initSafeDate.slice(5, 7)) - 1,
       stDate: initSafeDate,
       stMode: "daily",
-      stSlot: "16:00–21:00",
+      stSlot: "16:00–20:00",
       stGuests: 20,
       stRent: 12000,
       stHookah: false,
@@ -1133,7 +1134,7 @@
               if (d.customPrices.bogdanka || d.customPrices.tekstil) state.customPrices = d.customPrices;
               else state.customPrices.shared = d.customPrices;
             }
-            state.stRent = getRate(state.stDate, state.stLoft).daily;
+            recalcStaffRent();
             ensureValidModeAndHours();
             render();
           }
@@ -1371,6 +1372,152 @@
       state.stCalMonth = m;
       render();
     };
+    function parseStaffSlot(slotStr) {
+      const s = String(slotStr || "").trim();
+      const m = s.match(/^(\d{1,2})(?:[:.](\d{2}))?\s*[-–—]\s*(\d{1,2})(?:[:.](\d{2}))?$/);
+      if (!m) return { valid: false, sh: 16, sm: 0, eh: 20, em: 0, hours: 4, minWarn: false };
+      const sh = Number(m[1]);
+      const sm = m[2] ? Number(m[2]) : 0;
+      const eh = Number(m[3]);
+      const em = m[4] ? Number(m[4]) : 0;
+      if (sh > 23 || eh > 24 || sm > 59 || em > 59) {
+        return { valid: false, sh: 16, sm: 0, eh: 20, em: 0, hours: 4, minWarn: false };
+      }
+      let diffMin = (eh * 60 + em) - (sh * 60 + sm);
+      if (diffMin <= 0) diffMin += 24 * 60;
+      const rawHours = Math.round((diffMin / 60) * 100) / 100;
+      return {
+        valid: true,
+        sh: sh,
+        sm: sm,
+        eh: eh % 24,
+        em: em,
+        rawHours: rawHours,
+        hours: Math.max(3, rawHours),
+        minWarn: rawHours < 3,
+        cleanSlot: String(sh).padStart(2, "0") + ":" + String(sm).padStart(2, "0") + "–" + String(eh % 24).padStart(2, "0") + ":" + String(em).padStart(2, "0")
+      };
+    }
+
+    function calcStaffGuestExtra(guestsCount) {
+      const g = Number(guestsCount) || 20;
+      const lim = CONFIG.GUESTS_FREE_LIMIT || 20;
+      if (g <= lim) return 0;
+      if (g <= lim + 5) return CONFIG.GUESTS_21_25_RUB;
+      if (g <= lim + 10) return CONFIG.GUESTS_26_30_RUB;
+      return CONFIG.GUESTS_26_30_RUB + (g - (lim + 10)) * CONFIG.GUESTS_31_PLUS_RUB;
+    }
+
+    function calcStaffAuto() {
+      const rt = getRate(state.stDate, state.stLoft);
+      const parsed = parseStaffSlot(state.stSlot);
+      const hrs = parsed.hours;
+      const baseRent = state.stMode === "hourly" ? Math.round(hrs * rt.hour) : rt.daily;
+      const guestExtra = calcStaffGuestExtra(state.stGuests);
+      const totalRent = state.stForOwn ? 0 : (baseRent + guestExtra);
+      const capDailyRent = rt.daily + guestExtra;
+      const exceedsDaily = state.stMode === "hourly" && !state.stForOwn && baseRent > rt.daily;
+      return { rt, parsed, hrs, baseRent, guestExtra, totalRent, capDailyRent, exceedsDaily };
+    }
+
+    function recalcStaffRent() {
+      const info = calcStaffAuto();
+      state.stRent = info.totalRent;
+      return info;
+    }
+
+    function buildStaffLiveHintHtml() {
+      if (state.stForOwn) return "";
+      const info = calcStaffAuto();
+      const curRent = Number(state.stRent) || 0;
+      const hk = state.stHookah ? CONFIG.HOOKAH_RUB : 0;
+      const grandTotal = curRent + hk;
+      const prepay = Number(state.stPrepay) || 0;
+      const dueAtCheckin = Math.max(0, grandTotal - prepay);
+
+      let formulaLine = "";
+      if (state.stMode === "hourly") {
+        if (!info.parsed.valid) {
+          formulaLine = `<span style="color:#E59866;">Введите время в формате ЧЧ:ММ–ЧЧ:ММ (например 16:00–23:00)</span>`;
+        } else {
+          const hrsTxt = info.parsed.minWarn
+            ? `${info.parsed.rawHours} ч → мин. заказ 3 ч`
+            : `${info.hrs} ч (${info.parsed.cleanSlot})`;
+          formulaLine = `⏱ <strong>${hrsTxt}</strong> × ${fmt(info.rt.hour)} ₽/ч = <strong>${fmt(info.baseRent)} ₽</strong>` +
+            (info.guestExtra > 0 ? ` + гости <strong>${fmt(info.guestExtra)} ₽</strong>` : ``);
+        }
+      } else {
+        formulaLine = `🌙 Пакет Сутки (${info.rt.label}): <strong>${fmt(info.rt.daily)} ₽</strong>` +
+          (info.guestExtra > 0 ? ` + гости <strong>${fmt(info.guestExtra)} ₽</strong>` : ``);
+      }
+
+      const capBtn = (state.stMode === "hourly" && info.parsed.valid && curRent > info.capDailyRent)
+        ? `<div style="margin-top:7px;display:flex;flex-wrap:wrap;gap:6px;">
+             <button type="button" class="btn-outline" style="padding:6px 10px;font-size:11px;color:var(--accent-2);border-color:var(--border-strong);" onclick="haptic('light');state.stRent=${info.capDailyRent};render();">Поставить цену суток (${fmt(info.capDailyRent)} ₽)</button>
+             <button type="button" class="btn-outline" style="padding:6px 10px;font-size:11px;" onclick="haptic('light');state.stMode='daily';recalcStaffRent();render();">На полные Сутки 16:00–04:00</button>
+           </div>`
+        : ``;
+
+      return `
+        <div style="font-size:12px;color:var(--text-main);">${formulaLine}</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">
+          Итого договор: <strong style="color:var(--accent-2);">${fmt(grandTotal)} ₽</strong>${hk > 0 ? ` (вкл. кальян)` : ``} • При заезде: <strong>${fmt(dueAtCheckin)} ₽</strong> + залог ${fmt(CONFIG.DEPOSIT_RUB)} ₽
+        </div>
+        ${capBtn}
+      `;
+    }
+
+    window.onStaffSlotInput = function(val) {
+      state.stSlot = val;
+      const p = parseStaffSlot(val);
+      if (p.valid) {
+        const info = recalcStaffRent();
+        const rentEl = document.getElementById("stRentInp");
+        if (rentEl) rentEl.value = info.totalRent;
+      }
+      const hintEl = document.getElementById("stLiveHintBox");
+      if (hintEl) hintEl.innerHTML = buildStaffLiveHintHtml();
+    };
+
+    window.normalizeStaffSlotBlur = function() {
+      const p = parseStaffSlot(state.stSlot);
+      if (p.valid) {
+        state.stSlot = p.cleanSlot;
+        recalcStaffRent();
+        render();
+      }
+    };
+
+    window.shiftStaffSlotBound = function(which, delta) {
+      haptic("light");
+      const p = parseStaffSlot(state.stSlot);
+      let sh = p.valid ? p.sh : 16;
+      let sm = p.valid ? p.sm : 0;
+      let eh = p.valid ? p.eh : 20;
+      let em = p.valid ? p.em : 0;
+      if (which === "start") {
+        sh = (sh + delta + 24) % 24;
+      } else {
+        eh = (eh + delta + 24) % 24;
+      }
+      let dur = (eh * 60 + em) - (sh * 60 + sm);
+      if (dur <= 0) dur += 24 * 60;
+      if (dur < 180) {
+        if (which === "start") eh = (sh + 3) % 24;
+        else sh = (eh - 3 + 24) % 24;
+      }
+      state.stSlot = String(sh).padStart(2, "0") + ":" + String(sm).padStart(2, "0") + "–" + String(eh).padStart(2, "0") + ":" + String(em).padStart(2, "0");
+      recalcStaffRent();
+      render();
+    };
+
+    window.onStaffMoneyInput = function(field, val) {
+      if (field === "rent") state.stRent = val;
+      else if (field === "prepay") state.stPrepay = val;
+      const hintEl = document.getElementById("stLiveHintBox");
+      if (hintEl) hintEl.innerHTML = buildStaffLiveHintHtml();
+    };
+
     window.setStaffDate = function(d) {
       if (!d) return;
       haptic("light");
@@ -1380,8 +1527,7 @@
         state.stCalYear = p[0];
         state.stCalMonth = p[1] - 1;
       }
-      const rt = getRate(d, state.stLoft);
-      state.stRent = state.stMode === "hourly" ? (rt.hour * 4) : rt.daily;
+      recalcStaffRent();
       render();
     };
 
@@ -1837,12 +1983,12 @@
               <form onsubmit="submitStaffBooking(event)">
                 <div class="section-lbl">1. Выберите лофт</div>
                 <div class="loft-cards">
-                  <button type="button" class="loft-pick ${state.stLoft==='bogdanka'?'active-bog':''}" onclick="haptic('light');state.stLoft='bogdanka';state.stRent=getRate(state.stDate,'bogdanka').daily;render();">
+                  <button type="button" class="loft-pick ${state.stLoft==='bogdanka'?'active-bog':''}" onclick="haptic('light');state.stLoft='bogdanka';recalcStaffRent();render();">
                     <div style="font-size:10px;font-weight:800;color:var(--accent-2);">🟧 БОГДАНКА, 67</div>
                     <div style="font-size:13px;font-weight:900;margin-top:2px;">Open Space 120 м²</div>
                     <div style="font-size:10px;color:var(--text-muted);margin-top:1px;">Мангальная зона</div>
                   </button>
-                  <button type="button" class="loft-pick ${state.stLoft==='tekstil'?'active-tek':''}" onclick="haptic('light');state.stLoft='tekstil';state.stRent=getRate(state.stDate,'tekstil').daily;render();">
+                  <button type="button" class="loft-pick ${state.stLoft==='tekstil'?'active-tek':''}" onclick="haptic('light');state.stLoft='tekstil';recalcStaffRent();render();">
                     <div style="font-size:10px;font-weight:800;color:var(--emerald);">🟩 ТЕКСТИЛЬЩИКОВ</div>
                     <div style="font-size:13px;font-weight:900;margin-top:2px;">8к16 • 120 м²</div>
                     <div style="font-size:10px;color:var(--text-muted);margin-top:1px;">2 зала + «Марс»</div>
@@ -1878,25 +2024,52 @@
 
                 <div class="section-lbl">3. Формат аренды</div>
                 <div class="seg-bar">
-                  <button type="button" class="seg-btn ${state.stMode==='daily' && !state.stForOwn?'active':''}" onclick="haptic('light');state.stForOwn=false;state.stMode='daily';state.stRent=${autoRate.daily};render();">🌙 Сутки (${fmt(autoRate.daily)} ₽)</button>
-                  <button type="button" class="seg-btn ${state.stMode==='hourly' && !state.stForOwn?'active':''}" onclick="haptic('light');state.stForOwn=false;state.stMode='hourly';state.stRent=${autoRate.hour*4};render();">⏰ Часы</button>
-                  <button type="button" class="seg-btn ${state.stForOwn?'active-emerald':''}" onclick="haptic('light');state.stForOwn=!state.stForOwn;render();">🤝 Свои (0 ₽)</button>
+                  <button type="button" style="flex:1.4;" class="seg-btn ${state.stMode==='daily' && !state.stForOwn?'active':''}" onclick="haptic('light');state.stForOwn=false;state.stMode='daily';recalcStaffRent();render();">🌙 Сутки • ${fmt(autoRate.daily)} ₽</button>
+                  <button type="button" style="flex:1.25;" class="seg-btn ${state.stMode==='hourly' && !state.stForOwn?'active':''}" onclick="haptic('light');state.stForOwn=false;state.stMode='hourly';recalcStaffRent();render();">⏰ Часы • ${fmt(autoRate.hour)}/ч</button>
+                  <button type="button" style="flex:0.8;" class="seg-btn ${state.stForOwn?'active-emerald':''}" onclick="haptic('light');state.stForOwn=!state.stForOwn;recalcStaffRent();render();">🤝 Свои</button>
                 </div>
 
-                ${state.stMode === "hourly" && !state.stForOwn ? `
-                  <input class="input" placeholder="Интервал часов (например 15:00–20:00)" value="${state.stSlot}" oninput="state.stSlot=this.value" />
-                ` : ``}
+                ${state.stMode === "hourly" && !state.stForOwn ? (() => {
+                  const ps = parseStaffSlot(state.stSlot);
+                  const shStr = String(ps.valid ? ps.sh : 16).padStart(2, "0") + ":" + String(ps.valid ? ps.sm : 0).padStart(2, "0");
+                  const ehStr = String(ps.valid ? ps.eh : 20).padStart(2, "0") + ":" + String(ps.valid ? ps.em : 0).padStart(2, "0");
+                  return `
+                    <div class="chat-grid" style="margin-top:9px;">
+                      <div class="subcard" style="padding:8px 10px;display:flex;flex-direction:column;gap:5px;align-items:center;">
+                        <span style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;">Заезд</span>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                          <button type="button" class="stepper-btn" style="width:30px;height:30px;" onclick="shiftStaffSlotBound('start',-1)">−</button>
+                          <strong style="font-size:14px;color:var(--text-main);min-width:44px;text-align:center;">${shStr}</strong>
+                          <button type="button" class="stepper-btn" style="width:30px;height:30px;" onclick="shiftStaffSlotBound('start',1)">+</button>
+                        </div>
+                      </div>
+                      <div class="subcard" style="padding:8px 10px;display:flex;flex-direction:column;gap:5px;align-items:center;">
+                        <span style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;">Выезд</span>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                          <button type="button" class="stepper-btn" style="width:30px;height:30px;" onclick="shiftStaffSlotBound('end',-1)">−</button>
+                          <strong style="font-size:14px;color:var(--text-main);min-width:44px;text-align:center;">${ehStr}</strong>
+                          <button type="button" class="stepper-btn" style="width:30px;height:30px;" onclick="shiftStaffSlotBound('end',1)">+</button>
+                        </div>
+                      </div>
+                    </div>
+                    <input id="stSlotInp" class="input" style="margin-top:8px;" placeholder="Интервал (например 16:00–23:00)" value="${state.stSlot}" oninput="onStaffSlotInput(this.value)" onblur="normalizeStaffSlotBlur()" />
+                  `;
+                })() : ``}
 
                 ${!state.stForOwn ? `
                   <div class="chat-grid" style="margin-top:10px;">
                     <div>
                       <div style="font-size:11px;font-weight:700;color:var(--text-muted);">Аренда зала (₽)</div>
-                      <input type="number" inputmode="numeric" class="input" style="margin-top:4px;" value="${state.stRent}" oninput="state.stRent=this.value" required />
+                      <input id="stRentInp" type="number" inputmode="numeric" class="input" style="margin-top:4px;" value="${state.stRent}" oninput="onStaffMoneyInput('rent',this.value)" required />
                     </div>
                     <div>
                       <div style="font-size:11px;font-weight:700;color:var(--text-muted);">Предоплата (₽)</div>
-                      <input type="number" inputmode="numeric" class="input" style="margin-top:4px;" value="${state.stPrepay}" oninput="state.stPrepay=this.value" required />
+                      <input id="stPrepayInp" type="number" inputmode="numeric" class="input" style="margin-top:4px;" value="${state.stPrepay}" oninput="onStaffMoneyInput('prepay',this.value)" required />
                     </div>
+                  </div>
+
+                  <div id="stLiveHintBox" class="subcard" style="margin-top:9px;padding:10px 12px;border-color:rgba(226,165,95,0.28);">
+                    ${buildStaffLiveHintHtml()}
                   </div>
 
                   <div class="toggle-pill ${state.stHookah?'on':''}" style="margin-top:10px;" onclick="haptic('light');state.stHookah=!state.stHookah;render();">
@@ -1913,17 +2086,17 @@
                 ` : ``}
 
                 <div class="section-lbl">5. Гости и контакты</div>
-                <div class="subcard" style="padding:9px 12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
-                  <span style="font-size:13px;font-weight:800;">👥 Гостей на празднике:</span>
-                  <div style="display:flex;align-items:center;gap:8px;">
-                    <button type="button" class="stepper-btn" onclick="haptic('light');state.stGuests=Math.max(5,(Number(state.stGuests)||20)-1);render();">−</button>
-                    <strong style="color:var(--accent-2);font-size:15px;min-width:52px;text-align:center;">${state.stGuests} чел.</strong>
-                    <button type="button" class="stepper-btn" onclick="haptic('light');state.stGuests=Math.min(60,(Number(state.stGuests)||20)+1);render();">+</button>
+                <div class="subcard" style="padding:9px 12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:8px;">
+                  <span style="font-size:12.5px;font-weight:800;white-space:nowrap;">👥 Гостей (до ${CONFIG.GUESTS_FREE_LIMIT} — 0 ₽):</span>
+                  <div style="display:flex;align-items:center;gap:7px;flex-shrink:0;">
+                    <button type="button" class="stepper-btn" onclick="haptic('light');state.stGuests=Math.max(5,(Number(state.stGuests)||20)-1);recalcStaffRent();render();">−</button>
+                    <strong style="color:var(--accent-2);font-size:14px;min-width:54px;text-align:center;white-space:nowrap;">${state.stGuests} чел.</strong>
+                    <button type="button" class="stepper-btn" onclick="haptic('light');state.stGuests=Math.min(60,(Number(state.stGuests)||20)+1);recalcStaffRent();render();">+</button>
                   </div>
                 </div>
                 <div class="chat-grid" style="margin-top:4px;">
                   <input class="input" style="margin-top:0;" placeholder="Имя гостя" value="${state.stName}" oninput="state.stName=this.value" />
-                  <input class="input" style="margin-top:0;" type="tel" placeholder="+7 999 000-00-00" value="${state.stPhone}" oninput="state.stPhone=this.value" />
+                  <input class="input" style="margin-top:0;" type="tel" placeholder="+7 999 000-0000" value="${state.stPhone}" oninput="state.stPhone=this.value" />
                 </div>
                 <input class="input" placeholder="@telegram / повод / комментарий" value="${state.stComment}" oninput="state.stComment=this.value" />
 
@@ -2195,6 +2368,7 @@
       `;
     }
 
+    recalcStaffRent();
     render();
     loadLiveBlocked();
   </script>
