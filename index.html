@@ -771,6 +771,477 @@
       font-size: 12px;
       color: var(--text-muted);
     }
+
+    /* === МНОГОСТРАНИЧНАЯ НАВИГАЦИЯ И НОВЫЕ СЕКЦИИ (v9 Multi-Page) === */
+    .site-nav-strip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 10px 0 2px;
+    }
+    .site-nav-strip::-webkit-scrollbar { display: none; }
+
+    .page-pill {
+      border: 1px solid var(--border-soft);
+      background: rgba(22, 19, 16, 0.82);
+      color: var(--text-muted);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .page-pill:hover {
+      color: var(--text-main);
+      border-color: rgba(226, 165, 95, 0.35);
+    }
+    .page-pill.active {
+      background: linear-gradient(135deg, #DF703B, #B44D20);
+      color: #FFF;
+      border-color: rgba(255, 228, 196, 0.45);
+      box-shadow: 0 6px 18px rgba(204, 98, 51, 0.34);
+    }
+    .page-pill.active-tek {
+      background: linear-gradient(135deg, #3CA879, #277653);
+      color: #FFF;
+      border-color: rgba(154, 242, 201, 0.45);
+      box-shadow: 0 6px 18px rgba(66, 179, 130, 0.32);
+    }
+    .page-pill:active { transform: scale(0.96); }
+
+    .header-contacts {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    @media (max-width: 720px) {
+      .hide-mob { display: none !important; }
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 16px;
+      font-weight: 700;
+      flex-wrap: wrap;
+    }
+    .breadcrumb button {
+      background: none;
+      border: none;
+      color: var(--accent-2);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    /* Экспресс-подбор зала на Главной */
+    .finder-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    @media (max-width: 760px) {
+      .finder-grid { grid-template-columns: 1fr; }
+    }
+    .finder-hall-card {
+      background: rgba(18, 15, 13, 0.86);
+      border: 1px solid var(--border-soft);
+      border-radius: 20px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+    .finder-hall-card.free-bog { border-color: rgba(226, 165, 95, 0.42); }
+    .finder-hall-card.free-tek { border-color: rgba(66, 179, 130, 0.42); }
+
+    .avail-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .avail-free { background: rgba(66, 179, 130, 0.15); color: #7CE0B3; border: 1px solid rgba(66, 179, 130, 0.35); }
+    .avail-part { background: rgba(226, 165, 95, 0.15); color: #F2BE7E; border: 1px solid rgba(226, 165, 95, 0.38); }
+    .avail-busy { background: rgba(204, 98, 51, 0.14); color: #E58B6B; border: 1px solid rgba(204, 98, 51, 0.32); }
+
+    /* Карточки витрины двух залов */
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+    @media (max-width: 860px) {
+      .showcase-grid { grid-template-columns: 1fr; }
+    }
+    .showcase-card {
+      background: linear-gradient(165deg, rgba(35, 30, 26, 0.94), rgba(19, 16, 14, 0.97));
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 44px rgba(0, 0, 0, 0.42);
+    }
+    .showcase-cover {
+      height: 230px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      padding: 16px;
+      cursor: pointer;
+    }
+    .showcase-cover.cov-bog {
+      background: radial-gradient(circle at 80% 20%, rgba(226, 165, 95, 0.34), rgba(204, 98, 51, 0.2) 48%, #151210 90%);
+    }
+    .showcase-cover.cov-tek {
+      background: radial-gradient(circle at 80% 20%, rgba(66, 179, 130, 0.34), rgba(32, 85, 64, 0.24) 48%, #121614 90%);
+    }
+    .showcase-cover img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.35s ease;
+    }
+    .showcase-cover:hover img { transform: scale(1.03); }
+    .showcase-overlay {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      background: linear-gradient(180deg, rgba(16,14,12,0.45), rgba(16,14,12,0.92));
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 238, 218, 0.14);
+      border-radius: 16px;
+      padding: 12px 14px;
+    }
+    .showcase-body {
+      padding: 18px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .check-list {
+      list-style: none;
+      display: grid;
+      gap: 7px;
+      font-size: 13px;
+      color: var(--text-main);
+    }
+    .check-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.4;
+    }
+
+    /* Таблицы сравнения и тарифов */
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-top: 14px;
+      border-radius: 18px;
+      border: 1px solid var(--border-soft);
+      background: var(--bg-recessed);
+    }
+    .cmp-table {
+      width: 100%;
+      min-width: 580px;
+      border-collapse: collapse;
+      font-size: 13px;
+      text-align: left;
+    }
+    .cmp-table th, .cmp-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-soft);
+      vertical-align: top;
+    }
+    .cmp-table th {
+      background: rgba(38, 32, 28, 0.85);
+      color: var(--accent-2);
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 900;
+    }
+    .cmp-table tr:last-child td { border-bottom: none; }
+
+    /* Сетка фотогалереи зала (7 фото + лайтбокс) */
+    .photo-grid-7 {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .photo-thumb {
+      position: relative;
+      height: 126px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border-soft);
+      background: radial-gradient(circle at 70% 25%, rgba(226,165,95,0.22), #171412 85%);
+      cursor: pointer;
+      display: flex;
+      align-items: flex-end;
+      padding: 8px;
+      text-align: left;
+    }
+    .photo-thumb img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.25s ease;
+    }
+    .photo-thumb:hover img { transform: scale(1.05); }
+    .photo-thumb-cap {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      background: rgba(14, 12, 10, 0.82);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-radius: 10px;
+      padding: 5px 7px;
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.25;
+    }
+
+    /* Оснащение зала (4 карточки) */
+    .equip-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .equip-card {
+      background: var(--bg-recessed);
+      border: 1px solid var(--border-soft);
+      border-radius: 20px;
+      padding: 16px;
+    }
+    .equip-title {
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--accent-2);
+      margin-bottom: 9px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    /* Сценарии праздников и Отзывы */
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+    .scenario-card {
+      background: linear-gradient(165deg, rgba(36, 31, 27, 0.92), rgba(20, 17, 15, 0.96));
+      border: 1px solid var(--border-soft);
+      border-radius: 22px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .review-card {
+      background: var(--bg-recessed);
+      border: 1px solid var(--border-soft);
+      border-radius: 20px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    /* FAQ аккордеон */
+    .faq-list {
+      display: grid;
+      gap: 9px;
+      margin-top: 14px;
+    }
+    .faq-item {
+      background: var(--bg-recessed);
+      border: 1px solid var(--border-soft);
+      border-radius: 18px;
+      overflow: hidden;
+      transition: border-color 0.2s ease;
+    }
+    .faq-item.open {
+      border-color: rgba(226, 165, 95, 0.48);
+      background: rgba(26, 22, 19, 0.92);
+    }
+    .faq-q {
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--text-main);
+      padding: 15px 16px;
+      font-size: 14px;
+      font-weight: 800;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .faq-a {
+      padding: 0 16px 15px;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      border-top: 1px solid rgba(255, 238, 218, 0.05);
+      padding-top: 11px;
+    }
+
+    /* Встроенные карты */
+    .maps-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 14px;
+    }
+    @media (max-width: 860px) {
+      .maps-grid { grid-template-columns: 1fr; }
+    }
+    .map-frame-wrap {
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--border-soft);
+      height: 250px;
+      background: #181512;
+      margin-top: 10px;
+    }
+    .map-frame-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    /* Бейдж выгоды на 1 гостя */
+    .per-guest-pill {
+      background: linear-gradient(135deg, rgba(66, 179, 130, 0.18), rgba(40, 115, 82, 0.14));
+      border: 1px solid rgba(66, 179, 130, 0.4);
+      border-radius: 14px;
+      padding: 9px 12px;
+      margin-top: 9px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #98ECC4;
+      font-weight: 800;
+    }
+
+    /* Полноэкранный просмотр фото (Lightbox) */
+    .lightbox-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 95;
+      background: rgba(10, 8, 7, 0.94);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .lightbox-box {
+      width: 100%;
+      max-width: 780px;
+      background: rgba(26, 22, 19, 0.96);
+      border: 1px solid var(--border-strong);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
+    }
+    .lightbox-stage {
+      position: relative;
+      height: min(56vh, 460px);
+      background: radial-gradient(circle at 50% 35%, rgba(226,165,95,0.22), #0E0C0A 85%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .lightbox-stage img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Многоколоночный подвал */
+    .footer-grid {
+      max-width: 1140px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.3fr 1fr 1fr;
+      gap: 24px;
+      text-align: left;
+    }
+    @media (max-width: 780px) {
+      .footer-grid { grid-template-columns: 1fr; text-align: left; }
+    }
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-top: 8px;
+    }
+    .footer-links button, .footer-links a {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 12.5px;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      padding: 2px 0;
+    }
+    .footer-links button:hover, .footer-links a:hover { color: var(--accent-2); }
   </style>
 </head>
 <body class="theme-bogdanka">
@@ -1021,8 +1492,23 @@
     const initSafeDate = defaultISO < "2026-12-01" ? "2026-12-06" : defaultISO;
 
     const urlSubTabMatch = window.location.search.match(/[?&]tab=(booking|expense|tariff|quick)/);
+    function parseInitialRoute() {
+      const h = String(window.location.hash || "").replace(/^#\/?/, "").split("?")[0].trim().toLowerCase();
+      if (isStaffOnly || h === "staff") return { tab: "staff", page: "home" };
+      if (isMiniOnly || h === "mini") return { tab: "mini", page: "home" };
+      const validPages = ["home", "bogdanka", "tekstil", "formats", "prices", "faq"];
+      if (validPages.indexOf(h) !== -1) return { tab: "site", page: h };
+      return { tab: "site", page: "home" };
+    }
+    const initRoute = parseInitialRoute();
+
     const state = {
-      tab: isStaffOnly ? "staff" : (isMiniOnly ? "mini" : "site"),
+      tab: initRoute.tab,
+      page: initRoute.page,
+      mobileMenuOpen: false,
+      lightbox: null,
+      openFaq: 0,
+      mapTab: "both",
       staffSubTab: urlSubTabMatch ? urlSubTabMatch[1] : "booking",
       staffPinOk: localStorage.getItem("sd_staff_pin_ok") === "1",
       pinBuf: "",
@@ -1061,7 +1547,7 @@
       trHour: 1500,
       trDaily: 9000,
 
-      loft: "bogdanka",
+      loft: initRoute.page === "tekstil" ? "tekstil" : "bogdanka",
       zoneIdx: 0,
       calYear: Number(initSafeDate.slice(0, 4)),
       calMonth: Number(initSafeDate.slice(5, 7)) - 1,
@@ -1083,7 +1569,10 @@
     };
 
     function syncBodyTheme() {
-      const activeLoft = state.tab === "staff" ? state.stLoft : state.loft;
+      let activeLoft = state.loft;
+      if (state.tab === "staff") activeLoft = state.stLoft;
+      else if (state.page === "tekstil") activeLoft = "tekstil";
+      else if (state.page === "bogdanka") activeLoft = "bogdanka";
       document.body.className = activeLoft === "tekstil" ? "theme-tekstil" : "theme-bogdanka";
     }
 
@@ -1669,7 +2158,459 @@
       showToast("✨ Отправлено в группу: " + labelText);
     };
 
-    function renderCalculatorBlock() {
+
+    /* === МНОГОСТРАНИЧНЫЕ ДАННЫЕ, МАРШРУТИЗАЦИЯ И ШАБЛОНЫ 6 РАЗДЕЛОВ === */
+    const SITE_PAGES = [
+      { id: "home",     label: "Главная",          mobLabel: "🏠 Главная",        title: "SD Loft Чебоксары — Сеть двух лофтов по 120 м² | Аренда для праздников" },
+      { id: "bogdanka", label: "Богданка, 67",     mobLabel: "🟧 Богданка, 67",   title: "Лофт на Богдана Хмельницкого, 67 (120 м² + Мангал) — SD Loft Чебоксары" },
+      { id: "tekstil",  label: "Текстиль, 8к16",   mobLabel: "🟩 Текстиль, 8к16", title: "Лофт на Текстильщиков, 8к16 (2 зала 120 м² + Лаунж «Марс») — SD Loft" },
+      { id: "formats",  label: "Форматы",          mobLabel: "🎉 Форматы",        title: "Форматы праздников: ДР, Корпоратив, Девичник, Детский праздник — SD Loft" },
+      { id: "prices",   label: "Цены и Бронь",     mobLabel: "💰 Цены и Бронь",   title: "Цены, онлайн-калькулятор и свободные даты — SD Loft Чебоксары" },
+      { id: "faq",      label: "FAQ и Карты",      mobLabel: "📍 FAQ и Карты",    title: "Правила, частые вопросы (FAQ), адреса и схемы проезда — SD Loft Чебоксары" }
+    ];
+
+    const HALL_EQUIPMENT = {
+      bogdanka: [
+        {
+          icon: "🎤",
+          title: "Звук, караоке и свет (0 ₽)",
+          items: [
+            "Мощная акустическая система с Bluetooth и ноутбуком",
+            "Большой экран с проектором для караоке, клипов и презентаций",
+            "2 беспроводных микрофона без ограничений по песням",
+            "Тёплый неон, дизайнерские светильники-кубы и поп-арт картины",
+            "Белое ростовое гримёрное зеркало с лампами для фото и рилс"
+          ]
+        },
+        {
+          icon: "🔥",
+          title: "Мангальная зона у входа (0 ₽)",
+          items: [
+            "Своя приватная зона барбекю прямо во дворе у лофта",
+            "Мангал и комплект шампуров предоставляются бесплатно",
+            "Удобный выход из зала — горячий шашлык сразу на банкетный стол",
+            "С собой нужны только угли, жидкость для розжига и продукты"
+          ]
+        },
+        {
+          icon: "🎮",
+          title: "Игры, лаунж и чилл-зона",
+          items: [
+            "Игровая приставка PlayStation на большом ТВ + 2 геймпада",
+            "Топовые файтинги и игры для компании (Mortal Kombat 11 Ultimate и др.)",
+            "3D Infinity Table — эффектный зеркальный стол с бесконечной подсветкой",
+            "Мягкие кресла-шезлонги, красные пуфы-груши и диван под неоном"
+          ]
+        },
+        {
+          icon: "🍽",
+          title: "Банкет, кухня и комфорт",
+          items: [
+            "Единый зал Open Space 12×10 м (120 м²) — все гости в одном пространстве",
+            "Длинный банкетный стол на 24+ посадочных мест (стулья Eames) + танцпол",
+            "Кухня с мокрой точкой (раковина), холодильником, СВЧ и электрочайником",
+            "Базовый набор сервировочной посуды, гардеробный рейл и свой санузел внутри"
+          ]
+        }
+      ],
+      tekstil: [
+        {
+          icon: "🪩",
+          title: "Основной зал №1 и диско-свет",
+          items: [
+            "Длинный банкетный стол в стиле лофт + более 20 удобных стульев Eames",
+            "4 глубоких велюровых дивана изумрудного цвета вдоль стен",
+            "Т-образная стойка динамического клубного диско-света и неон",
+            "Потолочный проектор с большим экраном, DJ-стол с ноутбуком и микрофоны",
+            "Ростовое деревянное гримёрное зеркало на колёсиках с пальмами"
+          ]
+        },
+        {
+          icon: "🪐",
+          title: "Смежный зал №2 — Лаунж «Марс»",
+          items: [
+            "Отдельная смежная комната отдыха в рамках тех же 120 м²",
+            "Атмосферная светящаяся планета Марс во всю стену и ретро-гирлянда",
+            "Мягкий терракотовый диван и дизайнерский стол из паллет",
+            "Идеально для спокойного общения взрослых или отдельной детской зоны"
+          ]
+        },
+        {
+          icon: "🎮",
+          title: "PlayStation и настольные игры",
+          items: [
+            "Отдельная ТВ-зона в лаунже с приставкой PlayStation и геймпадами",
+            "Установленные хиты для турниров: FIFA, GTA V, Mortal Kombat",
+            "Мягкие пуфы для игроков и стеллаж с шахматами",
+            "Дети и любители игр не мешают танцам и караоке в основном зале"
+          ]
+        },
+        {
+          icon: "🍽",
+          title: "Кухонный уголок и входной холл",
+          items: [
+            "Удобная столешница для сервировки фуршета, закусок и напитков",
+            "Холодильник, микроволновая печь, чайник, тарелки и стаканы (0 ₽ пробковый сбор)",
+            "Оборудованная кальянная станция (кальян с углями по запросу +1 000 ₽)",
+            "Отдельная прихожая с волновым LED-зеркалом, вешалками и своим санузлом"
+          ]
+        }
+      ]
+    };
+
+    const EVENT_SCENARIOS = [
+      {
+        icon: "🎂",
+        badge: "Хит бронирований • 15–35 гостей",
+        title: "Взрослый День рождения и Юбилей",
+        recLoft: "bogdanka",
+        recLoftLabel: "Оба зала (Богданка — если с шашлыком, Текстиль — если нужно 2 зала)",
+        mode: "daily",
+        hoursCnt: 12,
+        guests: 20,
+        hookah: true,
+        techHour: false,
+        plan: [
+          "16:00 — Встреча гостей под welcome-плейлист, фуршет со своими напитками и закусками (0 ₽ пробковый сбор)",
+          "17:30 — Горячее (доставка / кейтеринг или свежий шашлык прямо с мангала на Богданке) + поздравления с видео на большом экране проектора",
+          "20:00 — Караоке-баттл на 2 беспроводных микрофона, танцы под клубный свет, турнир в PlayStation и отдых до 04:00 утра без соседей!"
+        ]
+      },
+      {
+        icon: "🥂",
+        badge: "Выгода компании в 3 раза • 15–50 гостей",
+        title: "Корпоратив, Тимбилдинг и Новый год",
+        recLoft: "tekstil",
+        recLoftLabel: "Текстильщиков, 8к16 или Богдана Хмельницкого, 67",
+        mode: "daily",
+        hoursCnt: 12,
+        guests: 25,
+        hookah: false,
+        techHour: false,
+        plan: [
+          "Весь лофт 120 м² закрыт только под ваш коллектив — никаких чужих столов и очередей у бара",
+          "На проекторе легко вывести итоги года, квиз с ведущим или брендированную заставку компании",
+          "Свой алкоголь и любимая еда без ресторанной наценки х3 экономят компании от 40 000 ₽ за один вечер"
+        ]
+      },
+      {
+        icon: "🎈",
+        badge: "Удобный почасовой формат • 10–30 гостей",
+        title: "Детский и подростковый День рождения",
+        recLoft: "tekstil",
+        recLoftLabel: "Идеально Текстильщиков, 8к16 (2 зала: детям и родителям)",
+        mode: "hourly",
+        hoursCnt: 4,
+        guests: 20,
+        hookah: false,
+        techHour: false,
+        plan: [
+          "Дневной или вечерний слот 4–5 часов: в одном зале аниматор, бумажное шоу, Just Dance на экране и PlayStation для детей",
+          "Во втором смежном зале «Марс» родители комфортно общаются за столом с пиццей, роллами и чаем",
+          "Никакой доплаты за свой торт, соки и фрукты — холодильник, СВЧ, чайник и уборка уже включены!"
+        ]
+      },
+      {
+        icon: "💃",
+        badge: "Эстетика для фото и Reels • 10–25 гостей",
+        title: "Девичник, Гендер-пати и Камерная свадьба",
+        recLoft: "tekstil",
+        recLoftLabel: "Текстильщиков, 8к16 (изумрудные диваны) или Богданка, 67",
+        mode: "hourly",
+        hoursCnt: 5,
+        guests: 16,
+        hookah: true,
+        techHour: true,
+        plan: [
+          "За 1 час до гостей декораторы спокойно собирают фотозону из шаров (технический час — всего 50% от цены часа)",
+          "Ростовые гримёрные зеркала с тёплыми лампами, неон и велюровые диваны дают готовый свет для фотографа и рилс",
+          "Полная приватность закрытого зала, любимые треки в караоке и уютный лаунж до глубокой ночи"
+        ]
+      },
+      {
+        icon: "🎓",
+        badge: "Шумим 24/7 до утра • 20–50 гостей",
+        title: "Выпускной, Экватор и Вечеринка друзей",
+        recLoft: "bogdanka",
+        recLoftLabel: "Богдана Хмельницкого, 67 (Open Space танцпол + мангал)",
+        mode: "daily",
+        hoursCnt: 12,
+        guests: 30,
+        hookah: true,
+        techHour: false,
+        plan: [
+          "Пакет «Сутки» (16:00–04:00): не нужно расходиться в 22:00 или искать продолжение по ночным барам",
+          "Просторный танцпол 12×10 м, мощный звук, караоке-хиты хором, мангал на свежем воздухе и чилл-зона с PS",
+          "В пересчёте на компанию из 25–30 человек аренда выходит дешевле билета в кино!"
+        ]
+      }
+    ];
+
+    const GUEST_REVIEWS = [
+      {
+        name: "Екатерина М.",
+        meta: "День рождения мужа (26 гостей) • Богданка, 67",
+        stars: "★★★★★ 5.0",
+        text: "Отмечали 30-летие мужа на Богдана Хмельницкого, 67. Мангал прямо у входа — это спасение! Ребята пожарили шашлык, принесли свои напитки и закуски, сэкономили минимум тысяч сорок по сравнению с кафе. Пели в караоке и танцевали до 3 ночи, никто слова не сказал про шум!"
+      },
+      {
+        name: "Алексей В.",
+        meta: "Корпоратив отдела (22 чел.) • Текстильщиков, 8к16",
+        stars: "★★★★★ 5.0",
+        text: "Брали зал на Текстильщиков для корпоратива. Очень круто, что там два смежных помещения: кто хотел петь и танцевать под диско-свет — тусили в большом зале с зелёными диванами, а остальные рубились в FIFA на PlayStation и общались в зале с Марсом. Чисто, стильно, залог вернули сразу."
+      },
+      {
+        name: "Марина Соколова",
+        meta: "Подростковый ДР дочки 14 лет • Текстильщиков, 8к16",
+        stars: "★★★★★ 5.0",
+        text: "Бронировали на 5 часов днём. Дети в полном восторге от неона, гримёрного зеркала, проектора и приставки! Привезли пиццу, суши и свой торт без всяких пробковых сборов. Администратор встретил вовремя, помог подключить телефон к колонке."
+      },
+      {
+        name: "Дарья и подруги",
+        meta: "Девичник (14 чел.) • Богданка, 67",
+        stars: "★★★★★ 5.0",
+        text: "Искали просторный стильный лофт в Чебоксарах без чужих людей. Вживую зал на Богданке даже просторнее, чем на фото — деревянный потолок, классный неон «Без юмора живут только глупцы», огромный экран караоке. Насняли кучу видео, кальян сделали отличный!"
+      },
+      {
+        name: "Дмитрий К.",
+        meta: "Встреча выпускников (30 чел.) • Богданка, 67",
+        stars: "★★★★★ 5.0",
+        text: "Собирались курсом 30 человек на пакет «Сутки». Места за длинным столом и на танцполе хватило всем с запасом. Есть холодильник, микроволновка, раковина, чистый санузел. Цена на компанию вышла копеечная, обязательно вернёмся летом!"
+      },
+      {
+        name: "Ольга Николаева",
+        meta: "Семейный юбилей (20 гостей) • Текстильщиков, 8к16",
+        stars: "★★★★★ 5.0",
+        text: "Очень переживала, будет ли уютно разным поколениям, но формат лофта зашёл на ура! Молодёжь играла в приставку и фоткалась у зеркала с пальмами, старшие с удовольствием пели любимые песни на большом экране. Спасибо команде SD Loft за чистоту и заботу!"
+      }
+    ];
+
+    const FAQ_ITEMS = [
+      {
+        q: "Можно ли принести свою еду, напитки, торт и алкоголь? Есть ли пробковый сбор?",
+        a: "Да, абсолютно всё можно приносить с собой или заказывать доставку (пиццу, роллы, кейтеринг) прямо ко входу лофта. Пробковый и сервисный сбор — 0 ₽, чеки на алкоголь не требуются."
+      },
+      {
+        q: "До скольки разрешено шуметь и включать громкую музыку?",
+        a: "Шуметь, петь в караоке и танцевать можно 24/7 без ограничений после 22:00 или 23:00! Оба наших пространства расположены в нежилых зданиях вдали от квартир, поэтому соседей за стенкой нет."
+      },
+      {
+        q: "Чем отличается пакет «Сутки» от почасовой аренды?",
+        a: "Почасовая аренда доступна от 3 часов и отлично подходит для дневных или вечерних праздников на 3–5 часов. Пакет «Сутки» (с 16:00 дня до 04:00 утра — 12 часов праздника) фиксирует за вами весь вечер и ночь по выгодной пакетной цене."
+      },
+      {
+        q: "Как происходит бронирование даты и возврат залога 3 000 ₽?",
+        a: "Для жёсткой фиксации даты за вами вносится предоплата 3 000 ₽ (остальные даты сразу закрываются в календаре на сайте и на Авито). При заезде оплачивается остаток аренды + возвратный залог 3 000 ₽ за сохранность имущества, который переводится вам обратно после приёмки зала."
+      },
+      {
+        q: "Нужно ли убираться и мыть зал после вечеринки?",
+        a: "Нет, стандартная уборка всего пространства 120 м² после вашего мероприятия уже включена в стоимость аренды (0 ₽)! Достаточно просто забрать свои личные вещи и оставшиеся продукты из холодильника."
+      },
+      {
+        q: "Что уже есть на кухне из техники и посуды?",
+        a: "В обоих лофтах в вашем распоряжении вместительный холодильник, микроволновая печь, электрический чайник, столешница для нарезки/сервировки и базовый комплект посуды (тарелки, стаканы, приборы). На Богдана Хмельницкого, 67 также установлена кухонная мойка с водой."
+      },
+      {
+        q: "Как пользоваться мангальной зоной на Богдана Хмельницкого, 67?",
+        a: "Мангальная площадка расположена во дворе прямо у входа в лофт. Пользование мангалом и шампурами бесплатное (0 ₽) на всё время вашей брони — вам нужно взять с собой только древесный уголь, розжиг и мясо/овощи."
+      },
+      {
+        q: "Можно ли приехать пораньше, чтобы украсить зал или принять доставку?",
+        a: "Администратор встречает гостей на площадке за 10–15 минут до начала брони. Если вам или вашим декораторам нужен полноценный дополнительный час на сборку большой фотозоны или сервировку кейтеринга — можно добавить «Технический час» со скидкой 50% от цены обычного часа."
+      },
+      {
+        q: "Можно ли курить сигареты или кальян внутри зала?",
+        a: "Курение обычных сигарет внутри помещения запрещено (у самого входа на улице есть удобное место для курения). Ароматный кальян с углями можно заказать у нашего администратора «под ключ» всего за +1 000 ₽."
+      },
+      {
+        q: "Можно ли продлить праздник на месте, если компания не хочет расходиться?",
+        a: "Да! Если сразу после вашего слота нет следующей брони (мы закладываем 2 часа буфера на уборку между гостями), вы можете легко продлить отдых почасово прямо через администратора."
+      }
+    ];
+
+    window.navigatePage = function(pageId, scrollTargetId) {
+      haptic("light");
+      state.tab = "site";
+      state.page = pageId;
+      state.mobileMenuOpen = false;
+      state.lightbox = null;
+
+      if (pageId === "bogdanka") {
+        state.loft = "bogdanka";
+        state.zoneIdx = 0;
+        ensureValidModeAndHours();
+      } else if (pageId === "tekstil") {
+        state.loft = "tekstil";
+        state.zoneIdx = 0;
+        ensureValidModeAndHours();
+      }
+
+      const pgMeta = SITE_PAGES.find(p => p.id === pageId);
+      if (pgMeta) document.title = pgMeta.title;
+
+      const targetHash = "#" + pageId;
+      if (window.location.hash !== targetHash && !isMiniOnly && !isStaffOnly) {
+        window.__skipNextHash = true;
+        try {
+          history.pushState(null, "", targetHash);
+        } catch (_) {
+          window.location.hash = targetHash;
+        }
+      }
+
+      render();
+
+      setTimeout(function() {
+        if (scrollTargetId) {
+          const el = document.getElementById(scrollTargetId);
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
+            return;
+          }
+        }
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }, 40);
+    };
+
+    window.addEventListener("hashchange", function() {
+      if (window.__skipNextHash) {
+        window.__skipNextHash = false;
+        return;
+      }
+      const r = parseInitialRoute();
+      state.tab = r.tab;
+      state.page = r.page;
+      if (r.page === "bogdanka") state.loft = "bogdanka";
+      else if (r.page === "tekstil") state.loft = "tekstil";
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    window.openLightbox = function(loftId, idx) {
+      haptic("light");
+      state.lightbox = { loft: loftId, idx: idx };
+      render();
+    };
+    window.closeLightbox = function() {
+      haptic("light");
+      state.lightbox = null;
+      render();
+    };
+    window.stepLightbox = function(delta, ev) {
+      if (ev) ev.stopPropagation();
+      if (!state.lightbox) return;
+      haptic("light");
+      const arr = LOFTS[state.lightbox.loft].zones;
+      state.lightbox.idx = (state.lightbox.idx + delta + arr.length) % arr.length;
+      render();
+    };
+    document.addEventListener("keydown", function(e) {
+      if (!state.lightbox) return;
+      if (e.key === "Escape") window.closeLightbox();
+      else if (e.key === "ArrowLeft") window.stepLightbox(-1);
+      else if (e.key === "ArrowRight") window.stepLightbox(1);
+    });
+
+    window.toggleFaq = function(idx) {
+      haptic("light");
+      state.openFaq = state.openFaq === idx ? -1 : idx;
+      render();
+    };
+
+    window.bookFromFinder = function(loftId, targetMode) {
+      haptic("light");
+      state.loft = loftId;
+      if (targetMode) state.mode = targetMode;
+      ensureValidModeAndHours();
+      navigatePage("prices", "calcSection");
+    };
+
+    window.applyScenarioPreset = function(loftId, modeStr, hoursCnt, guestsCnt, withHookah, withTech) {
+      haptic("success");
+      state.loft = loftId;
+      state.guests = guestsCnt;
+      state.hookah = Boolean(withHookah);
+      state.techHour = Boolean(withTech);
+      const busyHrs = getBusyHoursForDate(state.date, loftId);
+      if (modeStr === "hourly" || busyHrs.length > 0) {
+        state.mode = "hourly";
+        const wanted = [];
+        for (let i = 0; i < (hoursCnt || 4); i++) wanted.push(16 + i);
+        const free = wanted.filter(h => busyHrs.indexOf(h) === -1);
+        state.hours = free.length >= 3 ? free : ALL_HOUR_SLOTS.filter(h => busyHrs.indexOf(h) === -1).slice(0, Math.max(3, hoursCnt || 4));
+      } else {
+        state.mode = "daily";
+      }
+      showToast("✨ Параметры сценария подставлены в калькулятор!");
+      navigatePage("prices", "calcSection");
+    };
+
+    window.applyQuickPromoCode = function(codeWord, pctVal) {
+      haptic("success");
+      state.promoCode = codeWord;
+      state.promoPct = pctVal;
+      showToast("🎁 Промокод " + codeWord + " (−" + pctVal + "%) активирован в калькуляторе!");
+      render();
+      const el = document.getElementById("calcSection");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
+    function getUpcomingPeakDates(count) {
+      const out = [];
+      const wNames = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+      const base = new Date();
+      for (let d = 1; d <= 35 && out.length < (count || 4); d++) {
+        const dt = new Date(base.getTime() + d * 86400000);
+        const dow = dt.getDay();
+        if (dow === 5 || dow === 6 || dow === 0) {
+          const iso = dt.getFullYear() + "-" + String(dt.getMonth() + 1).padStart(2, "0") + "-" + String(dt.getDate()).padStart(2, "0");
+          const lbl = String(dt.getDate()).padStart(2, "0") + "." + String(dt.getMonth() + 1).padStart(2, "0") + " (" + wNames[dow] + ")";
+          out.push({ iso, lbl });
+        }
+      }
+      return out;
+    }
+
+    function renderLightboxModal() {
+      if (!state.lightbox) return "";
+      const lf = LOFTS[state.lightbox.loft];
+      const zn = lf.zones[state.lightbox.idx] || lf.zones[0];
+      return `
+        <div class="lightbox-backdrop" onclick="closeLightbox()">
+          <div class="lightbox-box" onclick="event.stopPropagation()">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border-soft);">
+              <div style="font-size:12px;font-weight:800;color:var(--accent-2);">
+                ${lf.shortName} • Зона ${state.lightbox.idx + 1} из ${lf.zones.length}
+              </div>
+              <button type="button" class="btn-outline" style="padding:6px 12px;border-radius:10px;" onclick="closeLightbox()">✕ Закрыть</button>
+            </div>
+            <div class="lightbox-stage">
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;z-index:1;">
+                <div style="font-size:36px;margin-bottom:8px;">🏠</div>
+                <div style="font-weight:900;font-size:16px;color:var(--accent-2);">${zn.name}</div>
+                <div style="font-size:12px;color:var(--text-muted);max-width:420px;margin-top:4px;">${zn.d}</div>
+              </div>
+              <img src="${zn.img}" alt="${zn.name}" onerror="this.style.display='none'" />
+            </div>
+            <div style="padding:16px 18px;">
+              <div style="font-size:16px;font-weight:900;">${zn.name}</div>
+              <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">${zn.d}</div>
+              <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;">
+                <div style="display:flex;gap:8px;">
+                  <button type="button" class="btn-outline" onclick="stepLightbox(-1, event)">‹ Предыдущая</button>
+                  <button type="button" class="btn-outline" onclick="stepLightbox(1, event)">Следующая ›</button>
+                </div>
+                <button type="button" class="btn-primary" style="width:auto;margin-top:0;padding:10px 16px;font-size:12.5px;" onclick="state.loft='${state.lightbox.loft}';state.lightbox=null;navigatePage('${state.lightbox.loft}','calcSection');">
+                  Проверить свободные даты зала →
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCalculatorBlock(sectionHeading) {
       const c = calc();
       const lf = LOFTS[state.loft];
       const fullBusy = isFullDayBusy(state.date, state.loft);
@@ -1678,15 +2619,21 @@
       const other = state.loft === "bogdanka" ? "tekstil" : "bogdanka";
       const otherFree = !isFullDayBusy(state.date, other) && getBusyHoursForDate(state.date, other).length === 0;
       const calHtml = buildDaysGrid(state.calYear, state.calMonth, state.loft, state.date, "setDate");
+      const perGuest = Math.max(1, Math.round(c.total / Math.max(1, state.guests)));
 
       return `
-        <div class="card" id="calcSection" style="padding:18px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px;">
+        <div class="card" id="calcSection" style="padding:20px;">
+          <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px;">
             <div>
-              <div class="status-pill"><span class="status-dot"></span> Живое расписание залов</div>
-              <h2 style="margin-top:6px;">Расчёт и свободные даты</h2>
+              <div class="status-pill"><span class="status-dot"></span> Живое расписание 2026–2027</div>
+              <h2 style="margin-top:6px;">${sectionHeading || "Онлайн-калькулятор и свободные даты"}</h2>
             </div>
-            ${isMiniOnly ? `<a href="https://t.me/${CONFIG.TG_USERNAME}" target="_blank" class="btn-outline" style="color:var(--accent-2);padding:8px 11px;">@${CONFIG.TG_USERNAME}</a>` : ``}
+            ${isMiniOnly ? `
+              <div style="display:flex;gap:6px;">
+                <button type="button" class="btn-outline" style="padding:8px 11px;" onclick="state.tab='site';state.page='home';render();">📸 О залах</button>
+                <a href="https://t.me/${CONFIG.TG_USERNAME}" target="_blank" class="btn-outline" style="color:var(--accent-2);padding:8px 11px;">@${CONFIG.TG_USERNAME}</a>
+              </div>
+            ` : ``}
           </div>
 
           <div class="loft-cards">
@@ -1715,18 +2662,23 @@
                 </div>
                 <div class="cal-weekdays"><div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div></div>
                 <div class="cal-grid">${calHtml}</div>
+                <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-size:10.5px;color:var(--text-muted);justify-content:center;">
+                  <span>⬜ Свободно (цена суток)</span>
+                  <span style="color:var(--accent-2);">🟨 Часы (доступна почасовая)</span>
+                  <span style="opacity:0.65;">⬛ Занято</span>
+                </div>
               </div>
 
               ${fullBusy ? `
                 <div class="subcard" style="margin-top:12px;border-color:rgba(204,98,51,0.55);background:rgba(204,98,51,0.13);">
-                  <div style="font-weight:800;font-size:13px;color:var(--accent-2);">На ${state.date} зал «${lf.shortName}» уже занят.</div>
+                  <div style="font-weight:800;font-size:13px;color:var(--accent-2);">На ${fmtDateRu(state.date)} зал «${lf.shortName}» уже занят.</div>
                   ${otherFree ? `<button type="button" class="btn-primary" style="margin-top:9px;padding:11px;" onclick="setLoft('${other}')">Переключить на свободный: ${LOFTS[other].shortName} →</button>` : ``}
                 </div>
               ` : ``}
 
               ${partBusy ? `
                 <div class="subcard" style="margin-top:12px;border-color:rgba(226,165,95,0.45);">
-                  <div style="font-weight:800;font-size:12px;color:var(--accent-2);">На ${state.date} часть часов занята (+2 ч уборка).</div>
+                  <div style="font-weight:800;font-size:12px;color:var(--accent-2);">На ${fmtDateRu(state.date)} часть часов занята (+2 ч уборка).</div>
                   <div style="color:var(--text-muted);font-size:12px;margin-top:3px;">Доступны свободные часы ниже${otherFree ? ` или полные сутки во втором зале:` : `.`}</div>
                   ${otherFree ? `<button type="button" class="btn-outline" style="margin-top:8px;width:100%;border-color:var(--accent-2);color:var(--accent-2);" onclick="setLoft('${other}');setMode('daily');">Свободен на сутки: ${LOFTS[other].shortName} →</button>` : ``}
                 </div>
@@ -1734,10 +2686,10 @@
 
               <div class="seg-bar" style="margin-top:12px;">
                 <button type="button" class="seg-btn ${state.mode==='daily'?'active':''}" ${partBusy?'disabled':''} onclick="setMode('daily')">
-                  🌙 Сутки (${partBusy ? 'занято' : (fmt(c.r.daily) + ' ₽')})
+                  🌙 Сутки • ${partBusy ? 'занято' : (fmt(c.r.daily) + ' ₽')}
                 </button>
                 <button type="button" class="seg-btn ${state.mode==='hourly'?'active':''}" onclick="setMode('hourly')">
-                  ⏰ Почасовая (${fmt(c.r.hour)} ₽/ч)
+                  ⏰ Почасовая • ${fmt(c.r.hour)} ₽/ч
                 </button>
               </div>
 
@@ -1781,7 +2733,7 @@
             <div class="concrete-summary">
               <div style="border-bottom:1px solid var(--border-soft);padding-bottom:10px;margin-bottom:10px;">
                 <div style="font-size:10px;font-weight:800;color:var(--accent-2);text-transform:uppercase;">${c.r.label}</div>
-                <div style="font-size:17px;font-weight:900;margin-top:2px;">${lf.shortName} • ${state.date}</div>
+                <div style="font-size:17px;font-weight:900;margin-top:2px;">${lf.shortName} • ${fmtDateRu(state.date)}</div>
               </div>
 
               <div class="row"><span>Аренда (${state.mode==='daily'?'Сутки 16:00–04:00':(c.hrs+' ч • '+formatHourlyRangeLabel())}):</span><strong>${fmt(c.base)} ₽</strong></div>
@@ -1793,24 +2745,28 @@
               <div style="font-size:11px;color:#82D8AE;padding:9px 0;border-top:1px solid var(--border-soft);border-bottom:1px solid var(--border-soft);margin:9px 0;">
                 <div>✓ Караоке, PlayStation, свет, посуда и уборка — 0 ₽</div>
                 <div>✓ Своя еда и напитки (0 ₽ пробковый сбор), 24/7</div>
-                ${state.loft==='bogdanka' ? `<div>✓ Мангальная зона во дворе + шампуры — 0 ₽</div>` : ``}
+                ${state.loft==='bogdanka' ? `<div>✓ Мангальная зона во дворе + шампуры — 0 ₽</div>` : `<div>✓ 2 смежных зала: банкетный + лаунж «Марс»</div>`}
               </div>
 
               <div style="display:flex;gap:7px;margin:10px 0;">
-                <input id="promoInp" class="input" style="margin-top:0;text-transform:uppercase;padding:11px 13px;" placeholder="Промокод" value="${state.promoCode}" />
+                <input id="promoInp" class="input" style="margin-top:0;text-transform:uppercase;padding:11px 13px;" placeholder="Промокод (например ЁЛКА)" value="${state.promoCode}" />
                 <button type="button" class="btn-outline" style="padding:0 16px;color:var(--accent-2);border-color:var(--border-strong);border-radius:16px;" onclick="applyPromo()">ОК</button>
               </div>
 
               <div class="subcard" style="padding:13px;">
                 <div class="row" style="margin:0;"><span style="font-weight:900;">ИТОГО АРЕНДА:</span><span style="font-size:23px;font-weight:900;color:var(--accent-2);">${fmt(c.total)} ₽</span></div>
-                <div class="row"><span>Предоплата для брони:</span><strong>${fmt(CONFIG.PREPAYMENT_RUB)} ₽</strong></div>
+                <div class="per-guest-pill">
+                  <span>💎 Выгода на ${state.guests} гостей:</span>
+                  <span>~${fmt(perGuest)} ₽ / чел.</span>
+                </div>
+                <div class="row" style="margin-top:10px;"><span>Предоплата для брони:</span><strong>${fmt(CONFIG.PREPAYMENT_RUB)} ₽</strong></div>
                 <div class="row"><span>Остаток при заезде:</span><strong>${fmt(c.rest)} ₽</strong></div>
                 <div class="row" style="color:var(--text-muted);font-size:11px;"><span>Возвратный залог при заезде:</span><span>${fmt(CONFIG.DEPOSIT_RUB)} ₽</span></div>
               </div>
 
               <form onsubmit="submitBooking(event)">
                 <input class="input" placeholder="Ваше имя" value="${state.name}" oninput="state.name=this.value" required />
-                <input class="input" type="tel" placeholder="Телефон (+7 999 000-00-00)" value="${state.phone}" oninput="state.phone=this.value" required />
+                <input class="input" type="tel" placeholder="Телефон (+7 999 000-0000)" value="${state.phone}" oninput="state.phone=this.value" required />
                 <div class="seg-bar" style="margin-top:9px;">
                   ${["Telegram","WhatsApp","MAX","VK"].map(ch => `
                     <button type="button" class="seg-btn ${state.channel===ch?'active':''}" onclick="haptic('light');state.channel='${ch}';render();">${ch}</button>
@@ -1821,12 +2777,710 @@
               </form>
 
               <div class="chat-grid" style="margin-top:12px;">
-                <button type="button" class="btn-outline" style="color:var(--accent-2);" onclick="sendToChat('Telegram')">Telegram</button>
-                <button type="button" class="btn-outline" style="color:#82D8AE;" onclick="sendToChat('WhatsApp')">WhatsApp</button>
+                <button type="button" class="btn-outline" style="color:var(--accent-2);" onclick="sendToChat('Telegram')">Написать в Telegram</button>
+                <button type="button" class="btn-outline" style="color:#82D8AE;" onclick="sendToChat('WhatsApp')">Написать в WhatsApp</button>
               </div>
             </div>
           </div>
         </div>
+      `;
+    }
+
+    /* --- СТРАНИЦА 1: ГЛАВНАЯ (ВИТРИНА СЕТИ SD LOFT) --- */
+    function renderHomePage() {
+      const peakDates = getUpcomingPeakDates(5);
+      function renderFinderHallCard(loftKey, badgeEmoji, accentColor) {
+        const lf = LOFTS[loftKey];
+        const fullBusy = isFullDayBusy(state.date, loftKey);
+        const busyHrs = getBusyHoursForDate(state.date, loftKey);
+        const partBusy = !fullBusy && busyHrs.length > 0;
+        const rt = getRate(state.date, loftKey);
+        const gExtra = calcStaffGuestExtra(state.guests);
+        const estDaily = rt.daily + gExtra;
+        const perPerson = Math.round(estDaily / Math.max(1, state.guests));
+
+        const statusHtml = fullBusy
+          ? `<span class="avail-tag avail-busy">🔴 Занят на ${fmtDateRu(state.date)}</span>`
+          : (partBusy
+              ? `<span class="avail-tag avail-part">🟡 Свободны часы (${fmt(rt.hour)} ₽/ч)</span>`
+              : `<span class="avail-tag avail-free">🟢 Свободен на сутки и часы</span>`);
+
+        return `
+          <div class="finder-hall-card ${!fullBusy ? (loftKey==='bogdanka'?'free-bog':'free-tek') : ''}">
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;">
+                <span style="font-size:11px;font-weight:900;color:${accentColor};">${badgeEmoji} 120 М² • ДО 50 ЧЕЛ.</span>
+                ${statusHtml}
+              </div>
+              <div style="font-size:17px;font-weight:900;margin-top:6px;">${lf.shortName}</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${lf.tag}</div>
+            </div>
+            <div style="padding-top:8px;border-top:1px solid var(--border-soft);display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;">
+              <div>
+                <span style="font-size:11px;color:var(--text-muted);">Сутки:</span>
+                <strong style="font-size:16px;color:var(--text-main);margin-left:4px;">${fmt(estDaily)} ₽</strong>
+                <span style="font-size:11px;color:#82D8AE;margin-left:5px;">(~${fmt(perPerson)} ₽/чел.)</span>
+              </div>
+              <div style="font-size:11.5px;color:var(--text-muted);">Час: <strong>${fmt(rt.hour)} ₽</strong></div>
+            </div>
+            <div class="chat-grid" style="margin-top:2px;">
+              <button type="button" class="btn-outline" onclick="navigatePage('${loftKey}')">О зале и фото</button>
+              <button type="button" class="btn-primary" style="margin-top:0;padding:10px 12px;font-size:12.5px;" ${fullBusy ? `onclick="navigatePage('${loftKey}','calcSection')"` : `onclick="bookFromFinder('${loftKey}','${partBusy?'hourly':'daily'}')"`}>
+                ${fullBusy ? 'Другие даты →' : 'Забронировать →'}
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      const bRates = CONFIG.BASE_RATES.bogdanka;
+      const tRates = CONFIG.BASE_RATES.tekstil;
+
+      return `
+        <!-- 1. HERO + БЫСТРЫЙ ПОДБОР СВОБОДНОГО ЗАЛА -->
+        <section class="card">
+          <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+            <span class="badge">🔥 Живое расписание 2026–2027</span>
+            <span class="status-pill"><span class="status-dot"></span> Чебоксары • 2 зала по 120 м²</span>
+          </div>
+          <h1>Аренда стильных пространств <span style="color:var(--accent-2);">SD LOFT</span> для ваших главных событий</h1>
+          <p class="muted" style="max-width:800px;font-size:14px;">
+            Два полностью оборудованных лофта по 120 м² только для вашей компании — без чужих гостей, пробковых сборов и ограничений по шуму. Проектор с караоке, PlayStation, клубный свет, посуда и уборка после вечеринки уже включены в цену!
+          </p>
+
+          <div class="utp-grid">
+            <div class="utp-item"><div class="utp-val">0 ₽</div><div class="utp-lbl">Пробковый сбор (своя еда и напитки)</div></div>
+            <div class="utp-item"><div class="utp-val">2 × 120 м²</div><div class="utp-lbl">Два просторных зала (10–50 гостей)</div></div>
+            <div class="utp-item"><div class="utp-val">Караоке + PS</div><div class="utp-lbl">Проектор, звук и свет без доплат</div></div>
+            <div class="utp-item"><div class="utp-val">Шумим 24/7</div><div class="utp-lbl">Нежилые здания без соседей</div></div>
+          </div>
+
+          <!-- Экспресс-проверка даты по обоим залам -->
+          <div class="subcard" style="padding:18px;border-color:rgba(226,165,95,0.28);">
+            <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;">
+              <div>
+                <div style="font-size:11px;font-weight:900;color:var(--accent-2);text-transform:uppercase;letter-spacing:0.04em;">⚡ Подбор свободного зала за 5 секунд</div>
+                <div style="font-size:15px;font-weight:900;margin-top:2px;">Проверьте вашу дату сразу по двум площадкам:</div>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                ${peakDates.map(pd => `
+                  <button type="button" class="nav-btn ${state.date===pd.iso?'active':''}" style="border:1px solid var(--border-soft);padding:6px 10px;font-size:11px;" onclick="setDate('${pd.iso}')">${pd.lbl}</button>
+                `).join("")}
+              </div>
+            </div>
+
+            <div class="chat-grid" style="margin-top:12px;">
+              <div>
+                <div style="font-size:11px;font-weight:700;color:var(--text-muted);">Выберите любую дату:</div>
+                <input type="date" class="input" style="margin-top:4px;padding:10px 12px;" value="${state.date}" onchange="setDate(this.value)" />
+              </div>
+              <div>
+                <div style="font-size:11px;font-weight:700;color:var(--text-muted);">Количество гостей:</div>
+                <div class="subcard" style="margin-top:4px;padding:7px 12px;border-radius:16px;display:flex;justify-content:space-between;align-items:center;">
+                  <button type="button" class="stepper-btn" onclick="stepGuests(-2)">−</button>
+                  <strong style="color:var(--accent-2);font-size:15px;">${state.guests} чел.</strong>
+                  <button type="button" class="stepper-btn" onclick="stepGuests(2)">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="finder-grid">
+              ${renderFinderHallCard("bogdanka", "🟧 ЛОФТ НА БОГДАНКЕ", "var(--accent-2)")}
+              ${renderFinderHallCard("tekstil", "🟩 ЛОФТ В ТЕКСТИЛЬЩИКАХ", "var(--emerald)")}
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. БОЛЬШИЕ КАРТОЧКИ ДВУХ ПЛОЩАДОК -->
+        <div class="showcase-grid">
+          <div class="showcase-card">
+            <div class="showcase-cover cov-bog" onclick="navigatePage('bogdanka')">
+              <img src="./b1.jpg" alt="SD Loft Богдана Хмельницкого 67" onerror="this.style.display='none'" />
+              <div class="showcase-overlay">
+                <div style="font-size:10px;font-weight:900;color:var(--accent-2);text-transform:uppercase;">🟧 Локация №1 • Юго-Запад / Богданка</div>
+                <div style="font-size:19px;font-weight:900;margin-top:2px;">ул. Богдана Хмельницкого, 67</div>
+                <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Единый Open Space зал 12×10 м (120 м²) + своя мангальная зона</div>
+              </div>
+            </div>
+            <div class="showcase-body">
+              <ul class="check-list">
+                <li><span style="color:var(--accent-2);">✔</span> <span><strong>Мангал и шампуры 0 ₽</strong> — своя зона барбекю прямо у входа во дворе</span></li>
+                <li><span style="color:var(--accent-2);">✔</span> <span><strong>Open Space 120 м²</strong> с фактурным деревянным потолком и просторным танцполом</span></li>
+                <li><span style="color:var(--accent-2);">✔</span> <span><strong>Банкетный стол на 24+ мест</strong>, лаунж с неоном, PlayStation и 3D Infinity Table</span></li>
+                <li><span style="color:var(--accent-2);">✔</span> <span><strong>Кухня с раковиной (мокрой точкой)</strong>, холодильником, СВЧ, посудой и своим WC</span></li>
+                <li><span style="color:var(--accent-2);">✔</span> <span>От <strong>${fmt(bRates.weekday[0])} ₽/ч</strong> (будни) • Пакет «Сутки» от <strong>${fmt(bRates.weekday[1])} ₽</strong></span></li>
+              </ul>
+              <div class="chat-grid" style="margin-top:4px;">
+                <button type="button" class="btn-primary" style="margin-top:0;" onclick="navigatePage('bogdanka')">7 фото и схема зала →</button>
+                <button type="button" class="btn-outline" style="border-color:var(--border-strong);color:var(--accent-2);" onclick="navigatePage('bogdanka','calcSection')">Свободные даты</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="showcase-card">
+            <div class="showcase-cover cov-tek" onclick="navigatePage('tekstil')">
+              <img src="./t1.jpg" alt="SD Loft Текстильщиков 8к16" onerror="this.style.display='none'" />
+              <div class="showcase-overlay">
+                <div style="font-size:10px;font-weight:900;color:var(--emerald);text-transform:uppercase;">🟩 Локация №2 • Южный / Текстильщиков</div>
+                <div style="font-size:19px;font-weight:900;margin-top:2px;">ул. Текстильщиков, 8к16</div>
+                <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Два смежных зала 120 м²: банкет с изумрудными диванами + лаунж «Марс»</div>
+              </div>
+            </div>
+            <div class="showcase-body">
+              <ul class="check-list">
+                <li><span style="color:var(--emerald);">✔</span> <span><strong>Два смежных зала (120 м²)</strong> — танцы и караоке в первом, чилл и игры во втором!</span></li>
+                <li><span style="color:var(--emerald);">✔</span> <span><strong>4 велюровых изумрудных дивана</strong>, длинный стол на 20+ стульев и Т-стойка диско-света</span></li>
+                <li><span style="color:var(--emerald);">✔</span> <span><strong>Космический лаунж «Марс»</strong> с огромной планетой, ретро-гирляндой и PlayStation</span></li>
+                <li><span style="color:var(--emerald);">✔</span> <span><strong>Два ростовых зеркала</strong> (гримёрное с пальмами + волновое в прихожей), кухня и WC</span></li>
+                <li><span style="color:var(--emerald);">✔</span> <span>От <strong>${fmt(tRates.weekday[0])} ₽/ч</strong> (будни) • Пакет «Сутки» от <strong>${fmt(tRates.weekday[1])} ₽</strong></span></li>
+              </ul>
+              <div class="chat-grid" style="margin-top:4px;">
+                <button type="button" class="btn-primary" style="margin-top:0;background:linear-gradient(135deg,#3CA879,#277653);" onclick="navigatePage('tekstil')">7 фото и схема зала →</button>
+                <button type="button" class="btn-outline" style="border-color:rgba(66,179,130,0.45);color:#7CE0B3;" onclick="navigatePage('tekstil','calcSection')">Свободные даты</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. СРАВНИТЕЛЬНАЯ ТАБЛИЦА ДВУХ ЛОФТОВ -->
+        <section class="card">
+          <div style="font-size:11px;font-weight:800;color:var(--accent-2);text-transform:uppercase;">Наглядное сравнение</div>
+          <h2 style="margin-top:4px;">Какой из двух лофтов подойдёт именно вам?</h2>
+          <p class="muted" style="margin-top:4px;">Обе площадки имеют площадь 120 м², одинаковую вместимость и 0 ₽ пробковый сбор, но отличаются планировкой и фишками:</p>
+          <div class="table-scroll">
+            <table class="cmp-table">
+              <thead>
+                <tr>
+                  <th style="width:26%;">Параметр</th>
+                  <th style="width:37%;">🟧 Богдана Хмельницкого, 67</th>
+                  <th style="width:37%;color:#7CE0B3;">🟩 Текстильщиков, 8к16</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Планировка 120 м²</strong></td>
+                  <td>Единый просторный <strong>Open Space 12×10 м</strong> — вся компания на виду</td>
+                  <td><strong>Два смежных зала</strong>: основной банкетно-танцевальный + отдельный лаунж «Марс»</td>
+                </tr>
+                <tr>
+                  <td><strong>Мангал и шашлык</strong></td>
+                  <td><strong style="color:var(--accent-2);">✓ Своя мангальная зона у входа + шампуры (0 ₽)</strong></td>
+                  <td>Без мангала (удобный подъезд курьеров доставки и кейтеринга ко входу)</td>
+                </tr>
+                <tr>
+                  <td><strong>Посадка и мебель</strong></td>
+                  <td>Банкетный стол 24+ стульев Eames, диван, шезлонги и пуфы-груши</td>
+                  <td>Длинный стол 20+ стульев + <strong>4 изумрудных дивана</strong> + терракотовый диван в лаунже</td>
+                </tr>
+                <tr>
+                  <td><strong>Фишки интерьера</strong></td>
+                  <td>Деревянный потолок, неон «Без юмора...», зеркальный <strong>3D Infinity Table</strong></td>
+                  <td>Светящаяся <strong>планета Марс</strong>, Т-стойка диско-света, зеркало с пальмами</td>
+                </tr>
+                <tr>
+                  <td><strong>Караоке и игры</strong></td>
+                  <td>Экран с проектором, 2 микрофона, колонка, ТВ + PlayStation (MK 11 и др.)</td>
+                  <td>Потолочный проектор + экран, микрофоны, DJ-стол, отдельный ТВ с PS (FIFA, GTA V, MK)</td>
+                </tr>
+                <tr>
+                  <td><strong>Кухня и удобства</strong></td>
+                  <td><strong>Мокрая точка с раковиной</strong>, холодильник, СВЧ, чайник, посуда, свой WC</td>
+                  <td>Кухонный уголок со столешницей, холодильник, СВЧ, чайник, посуда, холл и свой WC</td>
+                </tr>
+                <tr>
+                  <td><strong>Кому выбирают чаще</strong></td>
+                  <td>Дни рождения с шашлыком, шумные вечеринки, выпускные, корпоративы в одном зале</td>
+                  <td>Корпоративы с лаунж-зоной, детские/подростковые ДР (дети и взрослые отдельно), девичники</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 4. ВЫГОДА ПЕРЕД РЕСТОРАНОМ + БЫСТРЫЙ ПЕРЕХОД К СЦЕНАРИЯМ -->
+        <section class="card">
+          <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;">
+            <div>
+              <div style="font-size:11px;font-weight:800;color:#7CE0B3;text-transform:uppercase;">Честная математика праздника</div>
+              <h2 style="margin-top:4px;">Почему компания из 20 друзей экономит в SD Loft от 35 000 ₽</h2>
+            </div>
+            <button type="button" class="btn-outline" style="color:var(--accent-2);border-color:var(--border-strong);" onclick="navigatePage('formats')">Смотреть 5 готовых сценариев →</button>
+          </div>
+          <div class="grid-2" style="margin-top:14px;">
+            <div class="subcard" style="border-color:rgba(204,98,51,0.28);">
+              <div style="font-size:13px;font-weight:900;color:#E58B6B;">❌ Обычное кафе или банкетный зал (20 чел.)</div>
+              <ul class="check-list" style="margin-top:10px;color:var(--text-muted);">
+                <li><span>•</span> <span>Средний чек 3 000–3 500 ₽/чел. = <strong>60 000 – 70 000 ₽</strong></span></li>
+                <li><span>•</span> <span>Наценка х3 на напитки или платный пробковый сбор с каждой бутылки</span></li>
+                <li><span>•</span> <span>Чужие компании за соседними столами, очередь к микрофону и закрытие в 23:00</span></li>
+              </ul>
+            </div>
+            <div class="subcard" style="border-color:rgba(66,179,130,0.42);background:rgba(22,34,28,0.55);">
+              <div style="font-size:13px;font-weight:900;color:#82D8AE;">✅ Закрытый вечер в SD Loft (20 чел. • 120 м²)</div>
+              <ul class="check-list" style="margin-top:10px;">
+                <li><span>✔</span> <span>Аренда всего зала 120 м² на сутки (16:00–04:00) = <strong>всего ~450–750 ₽ с человека!</strong></span></li>
+                <li><span>✔</span> <span>Любимая еда, шашлык, пицца и напитки по магазинным ценам (<strong>0 ₽ пробковый сбор</strong>)</span></li>
+                <li><span>✔</span> <span>Никого кроме своих, бесплатное караоке, PlayStation и танцы до 04:00 утра</span></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. ОТЗЫВЫ ГОСТЕЙ -->
+        <section class="card">
+          <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;">
+            <div>
+              <div style="font-size:11px;font-weight:800;color:var(--accent-2);text-transform:uppercase;">Реальные впечатления гостей</div>
+              <h2 style="margin-top:4px;">Отзывы с Авито и Яндекс Карт (Рейтинг 5.0 ★)</h2>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <a href="${CONFIG.YANDEX_BOGDANKA}" target="_blank" class="btn-outline" style="color:var(--accent-2);">⭐ Отзывы на Яндекс Картах</a>
+              <a href="${CONFIG.VK_GROUP}" target="_blank" class="btn-outline">💬 Группа ВКонтакте</a>
+            </div>
+          </div>
+          <div class="reviews-grid">
+            ${GUEST_REVIEWS.map(rv => `
+              <div class="review-card">
+                <div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+                    <strong style="font-size:14px;">${rv.name}</strong>
+                    <span style="color:var(--accent-2);font-size:11.5px;font-weight:900;">${rv.stars}</span>
+                  </div>
+                  <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">${rv.meta}</div>
+                  <p style="font-size:12.5px;color:var(--text-main);margin-top:9px;line-height:1.5;">«${rv.text}»</p>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        </section>
+
+        <!-- Блок быстрого расчёта прямо внизу Главной -->
+        ${renderCalculatorBlock("Рассчитать стоимость и забронировать онлайн")}
+      `;
+    }
+
+    /* --- СТРАНИЦЫ 2 И 3: ДЕТАЛЬНЫЕ СТРАНИЦЫ КАЖДОГО ЛОФТА --- */
+    function renderLoftDetailPage(loftKey) {
+      const lf = LOFTS[loftKey];
+      const isBog = loftKey === "bogdanka";
+      const zn = lf.zones[state.zoneIdx] || lf.zones[0];
+      const eqList = HALL_EQUIPMENT[loftKey];
+      const rates = CONFIG.BASE_RATES[loftKey];
+      const otherKey = isBog ? "tekstil" : "bogdanka";
+
+      const floorplanHtml = isBog ? `
+        <div class="floorplan">
+          <div class="fp-box" style="grid-column:span 3;">Кухня с мокрой точкой (раковина), СВЧ и холодильником</div>
+          <div class="fp-box" style="grid-column:span 6;">Лаунж «Без юмора...» + ТВ PlayStation и 3D Infinity Table</div>
+          <div class="fp-box highlight" style="grid-column:span 3;">Мангальная зона во дворе + шампуры (0 ₽)</div>
+          <div class="fp-box" style="grid-column:span 3;">Отдельный вход, гардероб и свой WC</div>
+          <div class="fp-box highlight" style="grid-column:span 9;">Единый Open Space зал 12×10 м (120 м²): длинный банкетный стол (24+ мест), просторный танцпол, караоке-проектор и гримёрное зеркало</div>
+        </div>
+      ` : `
+        <div class="floorplan">
+          <div class="fp-box" style="grid-column:span 3;">Входной холл, волновое зеркало, рейлы и свой WC</div>
+          <div class="fp-box highlight" style="grid-column:span 5;">Смежный зал №2: Космический лаунж «Марс» + ТВ PlayStation и пуфы</div>
+          <div class="fp-box" style="grid-column:span 4;">Кухонный уголок, СВЧ, холодильник, посуда и кальянная станция</div>
+          <div class="fp-box highlight" style="grid-column:span 12;">Основной зал №1 (общая площадь 120 м²): длинный стол лофт + 4 изумрудных дивана, танцпол, караоке-экран, Т-стойка диско-света и гримёрное зеркало с пальмами</div>
+        </div>
+      `;
+
+      return `
+        <div class="breadcrumb">
+          <button type="button" onclick="navigatePage('home')">← Главная</button>
+          <span>/</span>
+          <span>${lf.title}</span>
+        </div>
+
+        <section class="card" style="margin-top:10px;">
+          <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:12px;">
+            <div>
+              <span class="badge" style="${!isBog?'color:#7CE0B3;border-color:rgba(66,179,130,0.4);background:rgba(66,179,130,0.12);':''}">
+                ${isBog ? '🟧 Лофт №1 • Open Space 12×10 м + Мангал 0 ₽' : '🟩 Лофт №2 • 2 смежных зала + Лаунж «Марс»'}
+              </span>
+              <h1 style="margin-top:10px;">${lf.title}</h1>
+              <p class="muted" style="max-width:740px;font-size:14px;">${lf.desc}. Вместимость от 10 до 50 гостей, 0 ₽ пробковый сбор, шумим 24/7!</p>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;">
+              <button type="button" class="btn-primary" style="width:auto;margin-top:0;padding:12px 18px;" onclick="document.getElementById('calcSection').scrollIntoView({behavior:'smooth'})">Проверить дату и цену ↓</button>
+              <button type="button" class="btn-outline" onclick="navigatePage('${otherKey}')">Смотреть 2-й зал →</button>
+            </div>
+          </div>
+
+          <div class="utp-grid" style="margin-bottom:0;">
+            <div class="utp-item"><div class="utp-val">120 м²</div><div class="utp-lbl">${isBog ? 'Единый зал 12×10 м без перегородок' : '2 смежных зала: банкет + чилл-зона'}</div></div>
+            <div class="utp-item"><div class="utp-val">${fmt(rates.weekday[0])} ₽/ч</div><div class="utp-lbl">Почасовая в будни (от 3 ч)</div></div>
+            <div class="utp-item"><div class="utp-val">от ${fmt(rates.weekday[1])} ₽</div><div class="utp-lbl">Пакет «Сутки» 16:00–04:00</div></div>
+            <div class="utp-item"><div class="utp-val">${isBog ? 'Мангал 0 ₽' : 'Лаунж «Марс»'}</div><div class="utp-lbl">${isBog ? 'Своя зона барбекю + шампуры' : 'Отдельная игровая с PS и диваном'}</div></div>
+          </div>
+        </section>
+
+        <!-- ИНТЕРАКТИВНЫЙ РУМТУР + СЕТКА ВСЕХ 7 ФОТО С ПОЛНОЭКРАННЫМ ПРОСМОТРОМ -->
+        <section class="card">
+          <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;">
+            <div>
+              <div style="font-size:11px;font-weight:800;color:var(--accent-2);text-transform:uppercase;">Виртуальная экскурсия по пространству</div>
+              <h2 style="margin-top:3px;">7 функциональных зон и 2D-схема зала</h2>
+            </div>
+            <button type="button" class="btn-outline" style="color:var(--accent-2);border-color:var(--border-strong);" onclick="openLightbox('${loftKey}', ${state.zoneIdx})">🔍 Открыть фото на весь экран</button>
+          </div>
+
+          <div class="grid-2">
+            <div class="zones-list">
+              ${lf.zones.map((z, i) => `
+                <button type="button" class="zone-card ${state.zoneIdx===i?'active':''}" onclick="setZone(${i})">
+                  <div style="font-size:10px;font-weight:800;color:var(--accent-2);">ЗОНА 0${i+1} • ⏱ ${z.t}</div>
+                  <div style="font-size:12.5px;font-weight:800;margin-top:3px;">${z.name}</div>
+                  <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">${z.d}</div>
+                </button>
+              `).join("")}
+            </div>
+            <div>
+              <div class="zone-preview" style="min-height:290px;cursor:pointer;" onclick="openLightbox('${loftKey}', ${state.zoneIdx})">
+                <img src="${zn.img}" alt="${zn.name}" onerror="this.style.display='none'" />
+                <div class="zone-caption">
+                  <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:10px;font-weight:800;color:var(--accent-2);">РУМТУР ${zn.t}</span>
+                    <span style="font-size:10px;color:var(--text-muted);">Нажмите для увеличения 🔍</span>
+                  </div>
+                  <div style="font-size:15px;font-weight:900;margin-top:3px;">${zn.name}</div>
+                  <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">${zn.d}</div>
+                </div>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
+                <a href="${isBog?CONFIG.YANDEX_BOGDANKA:CONFIG.YANDEX_TEKSTIL}" target="_blank" class="btn-outline" style="color:var(--accent-2);">📍 Открыть в Яндекс Картах</a>
+                <a href="${isBog?CONFIG.DGIS_BOGDANKA:CONFIG.DGIS_TEKSTIL}" target="_blank" class="btn-outline">🧭 Маршрут в 2ГИС</a>
+                <a href="tel:+${CONFIG.PHONE_RAW}" class="btn-outline">📞 Позвонить администратору</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Плитка всех 7 фото-зон для быстрого клика -->
+          <div class="photo-grid-7">
+            ${lf.zones.map((z, idx) => `
+              <button type="button" class="photo-thumb" onclick="openLightbox('${loftKey}', ${idx})">
+                <img src="${z.img}" alt="${z.name}" loading="lazy" onerror="this.style.display='none'" />
+                <div class="photo-thumb-cap">0${idx+1}. ${z.name.split('(')[0].trim()}</div>
+              </button>
+            `).join("")}
+          </div>
+
+          ${floorplanHtml}
+        </section>
+
+        <!-- ПОЛНЫЙ ЧЕК-ЛИСТ ОСНАЩЕНИЯ ЗАЛА -->
+        <section class="card">
+          <div style="font-size:11px;font-weight:800;color:#7CE0B3;text-transform:uppercase;">Всё включено в стоимость аренды</div>
+          <h2 style="margin-top:4px;">Подробная комплектация зала на ${lf.shortName}</h2>
+          <div class="equip-grid">
+            ${eqList.map(eq => `
+              <div class="equip-card">
+                <div class="equip-title"><span>${eq.icon}</span> <span>${eq.title}</span></div>
+                <ul class="check-list" style="font-size:12.5px;">
+                  ${eq.items.map(it => `<li><span style="color:var(--accent-2);">•</span><span>${it}</span></li>`).join("")}
+                </ul>
+              </div>
+            `).join("")}
+          </div>
+        </section>
+
+        ${renderCalculatorBlock("Свободные даты и расчёт: " + lf.shortName)}
+      `;
+    }
+
+    /* --- СТРАНИЦА 4: ФОРМАТЫ МЕРОПРИЯТИЙ (5 СЦЕНАРИЕВ) --- */
+    function renderFormatsPage() {
+      const wkBog = CONFIG.BASE_RATES.bogdanka;
+      return `
+        <div class="breadcrumb">
+          <button type="button" onclick="navigatePage('home')">← Главная</button>
+          <span>/</span>
+          <span>Форматы праздников</span>
+        </div>
+
+        <section class="card" style="margin-top:10px;">
+          <span class="badge">🎉 5 готовых сценариев под ключ</span>
+          <h1>Форматы мероприятий в <span style="color:var(--accent-2);">SD LOFT</span></h1>
+          <p class="muted" style="max-width:780px;font-size:14px;">
+            Выберите свой повод — мы уже продумали оптимальный зал, тайминг и рассадку. Нажмите кнопку под любым сценарием, чтобы автоматически подставить его параметры в онлайн-калькулятор!
+          </p>
+
+          <div class="scenario-grid">
+            ${EVENT_SCENARIOS.map(sc => {
+              const sampleBase = sc.mode === "hourly"
+                ? (sc.hoursCnt * wkBog.weekday[0])
+                : wkBog.friSun[1];
+              const gEx = calcStaffGuestExtra(sc.guests);
+              const hkEx = sc.hookah ? CONFIG.HOOKAH_RUB : 0;
+              const sampleSum = sampleBase + gEx + hkEx;
+              const perGuestEst = Math.round(sampleSum / sc.guests);
+
+              return `
+                <div class="scenario-card">
+                  <div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+                      <span style="font-size:28px;">${sc.icon}</span>
+                      <span class="badge" style="font-size:10px;padding:4px 10px;">${sc.badge}</span>
+                    </div>
+                    <h2 style="font-size:18px;margin-top:10px;">${sc.title}</h2>
+                    <div style="font-size:11.5px;color:var(--accent-2);font-weight:800;margin-top:5px;">
+                      📍 ${sc.recLoftLabel}
+                    </div>
+                    <ul class="check-list" style="margin-top:12px;font-size:12.5px;color:var(--text-muted);">
+                      ${sc.plan.map(step => `<li><span style="color:var(--accent-2);">▸</span><span>${step}</span></li>`).join("")}
+                    </ul>
+                  </div>
+                  <div>
+                    <div class="per-guest-pill" style="margin-top:4px;">
+                      <span>Ориентир на ${sc.guests} чел.:</span>
+                      <span>от ~${fmt(perGuestEst)} ₽ / гостя</span>
+                    </div>
+                    <button type="button" class="btn-primary" style="margin-top:10px;" onclick="applyScenarioPreset('${sc.recLoft}','${sc.mode}',${sc.hoursCnt},${sc.guests},${sc.hookah},${sc.techHour})">
+                      Посчитать этот сценарий на мою дату →
+                    </button>
+                  </div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        </section>
+
+        <!-- Дополнительные возможности для праздника -->
+        <section class="card">
+          <div style="font-size:11px;font-weight:800;color:var(--accent-2);text-transform:uppercase;">Полная свобода организатора</div>
+          <h2 style="margin-top:4px;">Кого можно пригласить на площадку (без комиссий и наценок!)</h2>
+          <div class="utp-grid" style="margin-bottom:0;">
+            <div class="utp-item"><div class="utp-val">🍕 Доставка и Кейтеринг</div><div class="utp-lbl">Любые рестораны, фуршетные боксы, пицца или свой шашлык — 0 ₽ сбор</div></div>
+            <div class="utp-item"><div class="utp-val">🎙 Ведущие и DJ</div><div class="utp-lbl">Можно пригласить любого ведущего, квиз-команду, кавер-дуэт или аниматора</div></div>
+            <div class="utp-item"><div class="utp-val">🎈 Декораторы и Фотозоны</div><div class="utp-lbl">Технический час для спокойного монтажа декора — всего 50% цены часа</div></div>
+            <div class="utp-item"><div class="utp-val">📸 Фотографы и Рилсмейкеры</div><div class="utp-lbl">Неон, гримёрные лампы и фактурные стены уже дают студийную картинку</div></div>
+          </div>
+        </section>
+      `;
+    }
+
+    /* --- СТРАНИЦА 5: ЦЕНЫ, АКЦИИ И ОНЛАЙН-КАЛЬКУЛЯТОР --- */
+    function renderPricesPage() {
+      const b = CONFIG.BASE_RATES.bogdanka;
+      const t = CONFIG.BASE_RATES.tekstil;
+      const mainCode = CONFIG.PROMO_MAIN_CODE || "ЁЛКА";
+      const mainPct = CONFIG.PROMO_MAIN_PCT || 10;
+
+      return `
+        <div class="breadcrumb">
+          <button type="button" onclick="navigatePage('home')">← Главная</button>
+          <span>/</span>
+          <span>Цены, акции и бронирование</span>
+        </div>
+
+        <section class="card" style="margin-top:10px;">
+          <span class="badge">💰 Прямые цены от собственников без комиссий агрегаторов</span>
+          <h1>Тарифы и правила расчёта <span style="color:var(--accent-2);">SD LOFT</span></h1>
+          <p class="muted" style="max-width:780px;font-size:14px;">
+            В стоимость каждого часа и суточного пакета уже включены оба караоке-микрофона, проектор, PlayStation, свет, посуда, мангал (на Богданке) и уборка после праздника!
+          </p>
+
+          <div class="table-scroll">
+            <table class="cmp-table">
+              <thead>
+                <tr>
+                  <th>День недели</th>
+                  <th>Почасовая (от 3 ч)</th>
+                  <th>🟧 Сутки (16:00–04:00) • Богданка, 67</th>
+                  <th style="color:#7CE0B3;">🟩 Сутки (16:00–04:00) • Текстильщиков, 8к16</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Будни (Пн – Чт)</strong></td>
+                  <td><strong>${fmt(b.weekday[0])} ₽ / час</strong></td>
+                  <td><strong style="color:var(--accent-2);">${fmt(b.weekday[1])} ₽</strong> (~${fmt(Math.round(b.weekday[1]/20))} ₽/чел. на 20 гостей)</td>
+                  <td><strong style="color:#7CE0B3;">${fmt(t.weekday[1])} ₽</strong> (~${fmt(Math.round(t.weekday[1]/20))} ₽/чел. на 20 гостей)</td>
+                </tr>
+                <tr>
+                  <td><strong>Пятница и Воскресенье</strong></td>
+                  <td><strong>${fmt(b.friSun[0])} ₽ / час</strong></td>
+                  <td><strong style="color:var(--accent-2);">${fmt(b.friSun[1])} ₽</strong> (~${fmt(Math.round(b.friSun[1]/20))} ₽/чел.)</td>
+                  <td><strong style="color:#7CE0B3;">${fmt(t.friSun[1])} ₽</strong> (~${fmt(Math.round(t.friSun[1]/20))} ₽/чел.)</td>
+                </tr>
+                <tr>
+                  <td><strong>Суббота</strong></td>
+                  <td><strong>${fmt(b.saturday[0])} ₽ / час</strong></td>
+                  <td><strong style="color:var(--accent-2);">${fmt(b.saturday[1])} ₽</strong> (~${fmt(Math.round(b.saturday[1]/20))} ₽/чел.)</td>
+                  <td><strong style="color:#7CE0B3;">${fmt(t.saturday[1])} ₽</strong> (~${fmt(Math.round(t.saturday[1]/20))} ₽/чел.)</td>
+                </tr>
+                <tr>
+                  <td><strong>Праздничные даты и декабрь</strong></td>
+                  <td colspan="3" style="color:var(--text-muted);">
+                    Рассчитываются автоматически при нажатии на нужную дату в живом календаре ниже (актуальные спеццены подгружаются в реальном времени).
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Прозрачные условия по гостям и допам -->
+          <div class="equip-grid" style="margin-top:16px;">
+            <div class="equip-card">
+              <div class="equip-title">👥 Вместимость и гости</div>
+              <ul class="check-list" style="font-size:12.5px;color:var(--text-muted);">
+                <li><span style="color:#82D8AE;">✓</span><span>До <strong>${CONFIG.GUESTS_FREE_LIMIT} гостей</strong> — включено в базовый тариф (<strong>0 ₽</strong>)</span></li>
+                <li><span>•</span><span>21–25 гостей: <strong>+${fmt(CONFIG.GUESTS_21_25_RUB)} ₽</strong> разово за весь вечер</span></li>
+                <li><span>•</span><span>26–30 гостей: <strong>+${fmt(CONFIG.GUESTS_26_30_RUB)} ₽</strong> разово за весь вечер</span></li>
+                <li><span>•</span><span>Свыше 30 гостей (до 50 чел.): <strong>+${fmt(CONFIG.GUESTS_31_PLUS_RUB)} ₽</strong> за гостя</span></li>
+              </ul>
+            </div>
+            <div class="equip-card">
+              <div class="equip-title">💨 Дополнительные опции</div>
+              <ul class="check-list" style="font-size:12.5px;color:var(--text-muted);">
+                <li><span>•</span><span>Кальян с углями «под ключ»: <strong>+${fmt(CONFIG.HOOKAH_RUB)} ₽</strong></span></li>
+                <li><span>•</span><span>Технический час декораторам до начала праздника: <strong>50% цены часа</strong></span></li>
+                <li><span style="color:#82D8AE;">✓</span><span>Караоке, проектор, PlayStation, мангал и уборка: <strong>0 ₽</strong></span></li>
+              </ul>
+            </div>
+            <div class="equip-card">
+              <div class="equip-title">🔒 Бронь и возвратный залог</div>
+              <ul class="check-list" style="font-size:12.5px;color:var(--text-muted);">
+                <li><span>•</span><span>Предоплата для закрытия даты за вами: <strong>${fmt(CONFIG.PREPAYMENT_RUB)} ₽</strong></span></li>
+                <li><span>•</span><span>Остаток аренды оплачивается при заезде в зал</span></li>
+                <li><span>•</span><span>Возвратный залог при заезде: <strong>${fmt(CONFIG.DEPOSIT_RUB)} ₽</strong> (возвращается переводом после приёмки)</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Промокоды и Акции -->
+          <div class="grid-2" style="margin-top:16px;">
+            <div class="subcard" style="border-color:rgba(226,165,95,0.48);background:linear-gradient(145deg,rgba(204,98,51,0.16),rgba(20,17,15,0.9));display:flex;flex-direction:column;justify-content:space-between;gap:10px;">
+              <div>
+                <div style="font-size:11px;font-weight:900;color:var(--accent-2);text-transform:uppercase;">🎁 Приветственный бонус сайта</div>
+                <div style="font-size:17px;font-weight:900;margin-top:3px;">Промокод «${mainCode}» — скидка −${mainPct}% на аренду зала</div>
+                <p class="muted" style="margin-top:4px;font-size:12.5px;">Действует при прямом онлайн-расчёте и бронировании через наш сайт без комиссий площадок.</p>
+              </div>
+              <button type="button" class="btn-primary" style="margin-top:0;padding:11px 14px;font-size:12.5px;" onclick="applyQuickPromoCode('${mainCode}', ${mainPct})">
+                Активировать промокод «${mainCode}» (−${mainPct}%) ↓
+              </button>
+            </div>
+
+            <div class="subcard" style="border-color:rgba(66,179,130,0.4);display:flex;flex-direction:column;justify-content:space-between;gap:10px;">
+              <div>
+                <div style="font-size:11px;font-weight:900;color:#7CE0B3;text-transform:uppercase;">🔥 Горящие окна недели</div>
+                <div style="font-size:17px;font-weight:900;margin-top:3px;">Скидка до −${CONFIG.PROMO_HOT_PCT || 15}% на ближайшие свободные даты</div>
+                <p class="muted" style="margin-top:4px;font-size:12.5px;">Следите за Сторис нашего сообщества ВКонтакте или уточните у администратора промокод на ближайшие выходные!</p>
+              </div>
+              <a href="${CONFIG.VK_GROUP}" target="_blank" class="btn-outline" style="color:#7CE0B3;border-color:rgba(66,179,130,0.4);">Перейти в группу ВК (vk.ru/sd_loft_21) →</a>
+            </div>
+          </div>
+        </section>
+
+        ${renderCalculatorBlock("Рассчитайте точную стоимость вашей даты")}
+      `;
+    }
+
+    /* --- СТРАНИЦА 6: ПРАВИЛА, FAQ И КОНТАКТЫ С КАРТАМИ --- */
+    function renderFaqContactsPage() {
+      return `
+        <div class="breadcrumb">
+          <button type="button" onclick="navigatePage('home')">← Главная</button>
+          <span>/</span>
+          <span>Правила, частые вопросы (FAQ) и контакты</span>
+        </div>
+
+        <section class="card" style="margin-top:10px;">
+          <span class="badge">❓ Ответы на частые вопросы гостей</span>
+          <h1>Правила отдыха и <span style="color:var(--accent-2);">FAQ</span></h1>
+          <p class="muted" style="max-width:760px;font-size:14px;">
+            Мы создали максимально лояльные правила без скрытых штрафов и доплат, чтобы вы чувствовали себя как на собственной загородной вилле в черте Чебоксар.
+          </p>
+
+          <div class="faq-list">
+            ${FAQ_ITEMS.map((item, i) => {
+              const isOpen = state.openFaq === i;
+              return `
+                <div class="faq-item ${isOpen ? 'open' : ''}">
+                  <button type="button" class="faq-q" onclick="toggleFaq(${i})">
+                    <span>${i + 1}. ${item.q}</span>
+                    <span style="color:var(--accent-2);font-size:18px;flex-shrink:0;">${isOpen ? '−' : '+'}</span>
+                  </button>
+                  ${isOpen ? `<div class="faq-a">${item.a}</div>` : ``}
+                </div>
+              `;
+            }).join("")}
+          </div>
+        </section>
+
+        <!-- КОРОТКАЯ ПАМЯТКА БЕРЕЖНОГО ОТДЫХА -->
+        <section class="card">
+          <div style="font-size:11px;font-weight:800;color:#7CE0B3;text-transform:uppercase;">Чтобы залог 3 000 ₽ всегда возвращался на 100%</div>
+          <h2 style="margin-top:4px;">4 простых правила бережного отдыха</h2>
+          <div class="equip-grid">
+            <div class="equip-card">
+              <div class="equip-title">🚭 Курение сигарет — на улице</div>
+              <p class="muted" style="font-size:12.5px;">Внутри залов не курят сигареты и стики — прямо у входа обустроена удобная зона на свежем воздухе. Кальян в зале можно заказать у администратора.</p>
+            </div>
+            <div class="equip-card">
+              <div class="equip-title">🎉 Без мелкого конфетти и пиротехники</div>
+              <p class="muted" style="font-size:12.5px;">Бенгальские огни, петарды и хлопушки с мелкой фольгой используем на улице (бумажное шоу внутри зала согласуется заранее с администратором).</p>
+            </div>
+            <div class="equip-card">
+              <div class="equip-title">🔊 Забота о технике и мебели</div>
+              <p class="muted" style="font-size:12.5px;">Проектор, микрофоны, геймпады PlayStation и велюровые диваны всегда проходят проверку перед вашим заездом, чтобы всё работало идеально.</p>
+            </div>
+            <div class="equip-card">
+              <div class="equip-title">⏰ Комфортный тайминг выезда</div>
+              <p class="muted" style="font-size:12.5px;">По окончании оплаченного времени администратор принимает зал за 5 минут и переводит возвратный залог обратно на вашу карту.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- КОНТАКТЫ И КАРТЫ ПРОЕЗДА К ОБОИМ ЗАЛАМ -->
+        <section class="card">
+          <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;">
+            <div>
+              <div style="font-size:11px;font-weight:800;color:var(--accent-2);text-transform:uppercase;">Связь за 1 минуту и точная навигация</div>
+              <h2 style="margin-top:4px;">Контакты и схемы проезда к лофтам</h2>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;">
+              <a href="tel:+${CONFIG.PHONE_RAW}" class="btn-primary" style="width:auto;margin-top:0;padding:10px 16px;">📞 ${CONFIG.PHONE_READABLE}</a>
+              <a href="https://t.me/${CONFIG.TG_USERNAME}" target="_blank" class="btn-outline" style="color:var(--accent-2);border-color:var(--border-strong);">✈️ Telegram @${CONFIG.TG_USERNAME}</a>
+              <a href="https://wa.me/${CONFIG.PHONE_RAW}" target="_blank" class="btn-outline" style="color:#82D8AE;">💬 WhatsApp</a>
+              <a href="${CONFIG.VK_GROUP}" target="_blank" class="btn-outline">ВК vk.ru/sd_loft_21</a>
+            </div>
+          </div>
+
+          <div class="maps-grid">
+            <div class="subcard" style="padding:16px;">
+              <div style="font-size:11px;font-weight:900;color:var(--accent-2);">🟧 ЛОФТ №1 • БОГДАНКА (120 М² + МАНГАЛ)</div>
+              <h3 style="font-size:17px;margin-top:4px;">г. Чебоксары, ул. Богдана Хмельницкого, 67</h3>
+              <p class="muted" style="margin-top:6px;font-size:12.5px;">
+                Нежилое здание со свободной парковкой прямо перед входом, удобный заезд для такси и курьеров доставки, своя мангальная зона во дворе. Показ зала по предварительному звонку!
+              </p>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
+                <a href="${CONFIG.YANDEX_BOGDANKA}" target="_blank" class="btn-outline" style="color:var(--accent-2);">📍 Яндекс Карты</a>
+                <a href="${CONFIG.DGIS_BOGDANKA}" target="_blank" class="btn-outline">🧭 2ГИС маршрут</a>
+                <button type="button" class="btn-outline" onclick="navigatePage('bogdanka','calcSection')">📅 Свободные даты</button>
+              </div>
+              <div class="map-frame-wrap">
+                <iframe src="https://yandex.ru/map-widget/v1/?text=%D0%A7%D0%B5%D0%B1%D0%BE%D0%BA%D1%81%D0%B0%D1%80%D1%8B%2C%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%91%D0%BE%D0%B3%D0%B4%D0%B0%D0%BD%D0%B0%20%D0%A5%D0%BC%D0%B5%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%BA%D0%BE%D0%B3%D0%BE%2C%2067&z=16" loading="lazy" title="Карта Богдана Хмельницкого 67"></iframe>
+              </div>
+            </div>
+
+            <div class="subcard" style="padding:16px;">
+              <div style="font-size:11px;font-weight:900;color:#7CE0B3;">🟩 ЛОФТ №2 • ТЕКСТИЛЬЩИКОВ (2 ЗАЛА 120 М²)</div>
+              <h3 style="font-size:17px;margin-top:4px;">г. Чебоксары, ул. Текстильщиков, 8к16</h3>
+              <p class="muted" style="margin-top:6px;font-size:12.5px;">
+                Отдельно стоящее нежилое строение (корпус 16): подъезд для такси и личных авто прямо к двери входного холла, парковочные места рядом, полная тишина вокруг и 0 соседей.
+              </p>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
+                <a href="${CONFIG.YANDEX_TEKSTIL}" target="_blank" class="btn-outline" style="color:#7CE0B3;">📍 Яндекс Карты</a>
+                <a href="${CONFIG.DGIS_TEKSTIL}" target="_blank" class="btn-outline">🧭 2ГИС маршрут</a>
+                <button type="button" class="btn-outline" onclick="navigatePage('tekstil','calcSection')">📅 Свободные даты</button>
+              </div>
+              <div class="map-frame-wrap">
+                <iframe src="https://yandex.ru/map-widget/v1/?text=%D0%A7%D0%B5%D0%B1%D0%BE%D0%BA%D1%81%D0%B0%D1%80%D1%8B%2C%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%A2%D0%B5%D0%BA%D1%81%D1%82%D0%B8%D0%BB%D1%8C%D1%89%D0%B8%D0%BA%D0%BE%D0%B2%2C%208%D0%BA16&z=16" loading="lazy" title="Карта Текстильщиков 8к16"></iframe>
+              </div>
+            </div>
+          </div>
+        </section>
       `;
     }
 
@@ -2239,11 +3893,10 @@
       `;
     }
 
+
     function render() {
       syncBodyTheme();
       const root = document.getElementById("app");
-      const lf = LOFTS[state.loft];
-      const zn = lf.zones[state.zoneIdx] || lf.zones[0];
 
       if (state.tab === "staff") {
         root.innerHTML = renderStaffApp();
@@ -2251,121 +3904,92 @@
       }
 
       if (state.tab === "mini") {
-        root.innerHTML = `<div class="mini-container">${(!isMiniOnly && !isStaffOnly) ? `<div style="margin-bottom:8px;"><button class="btn-outline" onclick="setTab('site')">← К полной версии сайта</button></div>` : (isStaffOnly ? `<div style="margin-bottom:8px;"><button class="btn-outline" style="color:var(--accent-2);" onclick="setTab('staff')">← Вернуться в Пульт управления</button></div>` : ``)}${renderCalculatorBlock()}</div>`;
+        root.innerHTML = `<div class="mini-container">${(!isMiniOnly && !isStaffOnly) ? `<div style="margin-bottom:8px;"><button class="btn-outline" onclick="navigatePage('home')">← На многостраничный сайт SD Loft</button></div>` : (isStaffOnly ? `<div style="margin-bottom:8px;"><button class="btn-outline" style="color:var(--accent-2);" onclick="setTab('staff')">← Вернуться в Пульт управления</button></div>` : ``)}${renderCalculatorBlock("Расчёт и свободные даты")}</div>`;
         return;
       }
 
       const headerHtml = `
         <header class="header">
-          <div class="container header-inner" style="padding-bottom:0;">
-            <div class="brand">
-              <div class="brand-logo">
-                <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
-                  <path d="M3 15L16 5L29 15" stroke="#E2A55F" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
-                  <line x1="12" y1="9" x2="12" y2="16" stroke="#E2A55F" stroke-width="1.6"/><circle cx="12" cy="18" r="2.2" fill="#E2A55F"/>
-                  <line x1="20" y1="9" x2="20" y2="14" stroke="#E2A55F" stroke-width="1.6"/><circle cx="20" cy="16" r="2.2" fill="#E2A55F"/>
-                </svg>
+          <div class="container" style="padding-bottom:0;">
+            <div class="header-inner">
+              <div class="brand" style="cursor:pointer;" onclick="navigatePage('home')">
+                <div class="brand-logo">
+                  <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
+                    <path d="M3 15L16 5L29 15" stroke="#E2A55F" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="12" y1="9" x2="12" y2="16" stroke="#E2A55F" stroke-width="1.6"/><circle cx="12" cy="18" r="2.2" fill="#E2A55F"/>
+                    <line x1="20" y1="9" x2="20" y2="14" stroke="#E2A55F" stroke-width="1.6"/><circle cx="20" cy="16" r="2.2" fill="#E2A55F"/>
+                  </svg>
+                </div>
+                <div>
+                  <div style="font-weight:900;letter-spacing:0.06em;font-size:17px;">SD LOFT</div>
+                  <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.07em;">Чебоксары • Два зала по 120 м²</div>
+                </div>
               </div>
-              <div>
-                <div style="font-weight:900;letter-spacing:0.06em;font-size:17px;">SD LOFT</div>
-                <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;">Чебоксары • Два зала по 120 м²</div>
+
+              <div class="header-contacts">
+                <a href="https://t.me/${CONFIG.TG_USERNAME}" target="_blank" class="btn-outline hide-mob" style="color:var(--accent-2);padding:8px 12px;">✈️ @${CONFIG.TG_USERNAME}</a>
+                <a href="tel:+${CONFIG.PHONE_RAW}" class="btn-outline" style="background:linear-gradient(135deg,#D86B38,#B54F22);color:#fff;border:none;padding:8px 13px;">📞 ${CONFIG.PHONE_READABLE}</a>
+                <button type="button" class="btn-outline" style="padding:8px 11px;color:var(--text-muted);" title="Пульт команды" onclick="setTab('staff')">🎛 Пульт</button>
               </div>
             </div>
-            <div class="nav-tabs">
-              <button class="nav-btn ${state.tab==='site'?'active':''}" onclick="setTab('site')">Сайт + Румтур</button>
-              <button class="nav-btn ${state.tab==='mini'?'active':''}" onclick="setTab('mini')">Калькулятор</button>
-              <button class="nav-btn ${state.tab==='staff'?'active':''}" onclick="setTab('staff')">Пульт</button>
-            </div>
-            <div style="display:flex;gap:8px;align-items:center;">
-              <a href="https://t.me/${CONFIG.TG_USERNAME}" target="_blank" class="btn-outline" style="color:var(--accent-2);">@${CONFIG.TG_USERNAME}</a>
-              <a href="tel:+${CONFIG.PHONE_RAW}" class="btn-outline" style="background:linear-gradient(135deg,#D86B38,#B54F22);color:#fff;border:none;">${CONFIG.PHONE_READABLE}</a>
-            </div>
+
+            <!-- Полоса из 6 разделов сайта (удобна и на ПК, и в 1 касание пальцем на смартфоне) -->
+            <nav class="site-nav-strip" aria-label="Разделы сайта">
+              ${SITE_PAGES.map(pg => {
+                const isAct = state.page === pg.id;
+                const actCls = isAct ? (pg.id === "tekstil" ? "active-tek" : "active") : "";
+                return `<button type="button" class="page-pill ${actCls}" onclick="navigatePage('${pg.id}')">${pg.mobLabel}</button>`;
+              }).join("")}
+            </nav>
           </div>
         </header>
       `;
 
-      const floorplanHtml = state.loft === "bogdanka" ? `
-        <div class="floorplan">
-          <div class="fp-box" style="grid-column:span 3;">Кухня с раковиной, СВЧ и холодильником</div>
-          <div class="fp-box" style="grid-column:span 6;">Лаунж «Без юмора...» + PS и 3D Infinity Table</div>
-          <div class="fp-box highlight" style="grid-column:span 3;">Мангальная зона во дворе + шампуры (0 ₽)</div>
-          <div class="fp-box" style="grid-column:span 3;">Вход, гардероб и свой WC</div>
-          <div class="fp-box highlight" style="grid-column:span 9;">Единый Open Space зал 12×10 м (120 м²): длинный банкетный стол (24+ чел.), танцпол, караоке-проектор и зеркало</div>
-        </div>
-      ` : `
-        <div class="floorplan">
-          <div class="fp-box" style="grid-column:span 3;">Прихожая, волновое зеркало и свой WC</div>
-          <div class="fp-box highlight" style="grid-column:span 5;">Смежный зал №2: Лаунж «Марс» + PlayStation и пуфы</div>
-          <div class="fp-box" style="grid-column:span 4;">Кухонный уголок, посуда, СВЧ и кальянная станция</div>
-          <div class="fp-box highlight" style="grid-column:span 12;">Основной зал №1 (общая площадь 120 м²): длинный стол + 4 изумрудных дивана, танцпол, караоке-проектор, Т-стойка диско-света и гримёрное зеркало</div>
-        </div>
-      `;
+      let pageBodyHtml = "";
+      if (state.page === "bogdanka") pageBodyHtml = renderLoftDetailPage("bogdanka");
+      else if (state.page === "tekstil") pageBodyHtml = renderLoftDetailPage("tekstil");
+      else if (state.page === "formats") pageBodyHtml = renderFormatsPage();
+      else if (state.page === "prices") pageBodyHtml = renderPricesPage();
+      else if (state.page === "faq") pageBodyHtml = renderFaqContactsPage();
+      else pageBodyHtml = renderHomePage();
 
-      root.innerHTML = headerHtml + `
-        <main class="container">
-          <section class="card">
-            <span class="badge">🔥 Живое расписание обоих залов • Бронь на любые даты 2026–2027</span>
-            <h1>Сеть пространств <span style="color:var(--accent-2);">SD LOFT</span> в Чебоксарах</h1>
-            <p class="muted" style="max-width:760px;">Два просторных зала по 120 м² для дней рождения, корпоративов, детских праздников, свадеб и вечеринок. Караоке на большом экране, PlayStation, мощный звук и уборка уже в цене!</p>
-            <div class="utp-grid">
-              <div class="utp-item"><div class="utp-val">0 ₽</div><div class="utp-lbl">Пробковый сбор (своя еда)</div></div>
-              <div class="utp-item"><div class="utp-val">10–50 чел.</div><div class="utp-lbl">Вместимость каждого зала</div></div>
-              <div class="utp-item"><div class="utp-val">Караоке + PS</div><div class="utp-lbl">Включены без доплат</div></div>
-              <div class="utp-item"><div class="utp-val">Шумим 24/7</div><div class="utp-lbl">Без жалоб соседей</div></div>
-            </div>
-            <div class="loft-switch">
-              <button class="loft-btn ${state.loft==='bogdanka'?'active':''}" onclick="setLoft('bogdanka')">📍 ул. Богдана Хмельницкого, 67 (Open Space 12×10 м • 120 м² + Мангал 0 ₽)</button>
-              <button class="loft-btn ${state.loft==='tekstil'?'active':''}" onclick="setLoft('tekstil')">📍 ул. Текстильщиков, 8к16 (2 зала • 120 м² + Лаунж «Марс»)</button>
-            </div>
-          </section>
-
-          <section class="card">
-            <div style="font-size:11px;font-weight:800;color:var(--accent-2);text-transform:uppercase;">Румтур и 2D-планировка 120 м²</div>
-            <h2>${lf.title}</h2>
-            <p class="muted" style="margin-top:4px;">${lf.desc}</p>
-            <div class="grid-2">
-              <div class="zones-list">
-                ${lf.zones.map((z, i) => `
-                  <button type="button" class="zone-card ${state.zoneIdx===i?'active':''}" onclick="setZone(${i})">
-                    <div style="font-size:10px;font-weight:800;color:var(--accent-2);">ЗОНА 0${i+1} • ⏱ ${z.t}</div>
-                    <div style="font-size:12px;font-weight:800;margin-top:3px;">${z.name}</div>
-                    <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">${z.d}</div>
-                  </button>
-                `).join("")}
-              </div>
-              <div>
-                <div class="zone-preview">
-                  <img src="${zn.img}" alt="${zn.name}" onerror="this.style.display='none'" />
-                  <div class="zone-caption">
-                    <div style="font-size:10px;font-weight:800;color:var(--accent-2);">РУМТУР ${zn.t}</div>
-                    <div style="font-size:15px;font-weight:900;margin-top:2px;">${zn.name}</div>
-                    <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">${zn.d}</div>
-                  </div>
-                </div>
-                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
-                  <a href="${state.loft==='bogdanka'?CONFIG.YANDEX_BOGDANKA:CONFIG.YANDEX_TEKSTIL}" target="_blank" class="btn-outline" style="color:var(--accent-2);">📍 Яндекс Карты</a>
-                  <a href="${state.loft==='bogdanka'?CONFIG.DGIS_BOGDANKA:CONFIG.DGIS_TEKSTIL}" target="_blank" class="btn-outline">🧭 2ГИС маршрут</a>
-                  <a href="${CONFIG.VK_GROUP}" target="_blank" class="btn-outline">💬 Группа ВК (sd_loft_21)</a>
-                </div>
-              </div>
-            </div>
-            ${floorplanHtml}
-          </section>
-
-          ${renderCalculatorBlock()}
-        </main>
-
+      const footerHtml = `
         <footer>
-          <div style="font-weight:800;color:var(--text-main);">SD LOFT ЧЕБОКСАРЫ — ул. Богдана Хмельницкого, 67 (120 м²) • ул. Текстильщиков, 8к16 (120 м²)</div>
-          <div style="margin-top:8px;display:flex;flex-wrap:wrap;justify-content:center;gap:12px;font-weight:700;">
-            <a href="tel:+${CONFIG.PHONE_RAW}" style="color:var(--accent-2);">${CONFIG.PHONE_READABLE}</a>
-            <a href="https://t.me/${CONFIG.TG_USERNAME}" target="_blank" style="color:var(--accent-2);">Telegram @${CONFIG.TG_USERNAME}</a>
-            <a href="https://wa.me/${CONFIG.PHONE_RAW}" target="_blank" style="color:var(--accent-2);">WhatsApp</a>
-            <a href="${CONFIG.VK_GROUP}" target="_blank" style="color:var(--accent-2);">ВК vk.ru/sd_loft_21</a>
-            <a href="${CONFIG.YANDEX_BOGDANKA}" target="_blank" style="color:var(--accent-2);">Яндекс Карты</a>
+          <div class="footer-grid">
+            <div>
+              <div style="font-weight:900;font-size:16px;color:var(--text-main);letter-spacing:0.05em;">SD LOFT ЧЕБОКСАРЫ</div>
+              <p style="margin-top:6px;line-height:1.5;">
+                Сеть двух приватных пространств по 120 м² для дней рождения, корпоративов, детских праздников, девичников и вечеринок. 0 ₽ пробковый сбор • Работаем 24/7 по предварительной брони.
+              </p>
+              <div style="margin-top:10px;font-weight:800;color:var(--accent-2);">
+                📍 ул. Богдана Хмельницкого, 67 • 📍 ул. Текстильщиков, 8к16
+              </div>
+            </div>
+
+            <div>
+              <div style="font-weight:900;color:var(--text-main);text-transform:uppercase;font-size:11px;letter-spacing:0.05em;">Разделы сайта</div>
+              <div class="footer-links">
+                ${SITE_PAGES.map(pg => `<button type="button" onclick="navigatePage('${pg.id}')">${pg.mobLabel}</button>`).join("")}
+              </div>
+            </div>
+
+            <div>
+              <div style="font-weight:900;color:var(--text-main);text-transform:uppercase;font-size:11px;letter-spacing:0.05em;">Связаться и построить маршрут</div>
+              <div class="footer-links">
+                <a href="tel:+${CONFIG.PHONE_RAW}" style="color:var(--accent-2);">${CONFIG.PHONE_READABLE}</a>
+                <a href="https://t.me/${CONFIG.TG_USERNAME}" target="_blank">Telegram: @${CONFIG.TG_USERNAME}</a>
+                <a href="https://wa.me/${CONFIG.PHONE_RAW}" target="_blank">WhatsApp чат</a>
+                <a href="${CONFIG.VK_GROUP}" target="_blank">ВКонтакте: vk.ru/sd_loft_21</a>
+                <a href="${CONFIG.YANDEX_BOGDANKA}" target="_blank">Яндекс Карты (Богданка, 67)</a>
+                <a href="${CONFIG.YANDEX_TEKSTIL}" target="_blank">Яндекс Карты (Текстильщиков, 8к16)</a>
+                <button type="button" onclick="setTab('staff')" style="opacity:0.7;">🔒 Вход в Пульт команды</button>
+              </div>
+            </div>
           </div>
         </footer>
       `;
+
+      root.innerHTML = headerHtml + `<main class="container">${pageBodyHtml}</main>` + footerHtml + renderLightboxModal();
     }
 
     recalcStaffRent();
